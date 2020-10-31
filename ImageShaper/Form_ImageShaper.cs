@@ -29,6 +29,7 @@ namespace ImageShaper
 
         private SplitFrame SplitStartFrame;
         private SplitFrame SplitEndFrame;
+        private int SplitInterval;
         private bool SplitWithShadow;
         private bool TrimInputName;
         private bool SilentWhenDone;
@@ -363,6 +364,7 @@ namespace ImageShaper
 
             SplitStartFrame = SplitFrame.Begin;
             SplitEndFrame = SplitFrame.End;
+            SplitInterval = 1;
             SplitWithShadow = false;
             TrimInputName = true;
             SilentWhenDone = false;
@@ -1151,6 +1153,11 @@ namespace ImageShaper
 
                     for (int shp_i = frameStart; shp_i < frameEnd; shp_i++)
                     {
+                        //skip such frames
+                        if (( (shp_i - frameStart) % SplitInterval) != 0 ) {
+                            continue;
+                        }
+
                         if(SplitWithShadow)
                         {
                             if(shp_i >= SHPFrames.Length / 2 && shp_i - SHPFrames.Length / 2 < frameStart)
@@ -2221,8 +2228,10 @@ namespace ImageShaper
                 {
                     SplitWithShadow = true;
                 }
-                else if(args[i].StartsWith("-notrim"))
-                {
+                else if (args[i].StartsWith("-splitinterval=")) {
+                    SplitInterval = Math.Max(1, Convert.ToInt32(argvalue));
+                    Console.WriteLine("SplitInterval = " + SplitInterval);
+                } else if(args[i].StartsWith("-notrim")) {
                     TrimInputName = false;
                 }
                 else if (args[i].StartsWith("-silentwhendone")) {
