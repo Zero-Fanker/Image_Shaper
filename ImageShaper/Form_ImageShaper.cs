@@ -266,6 +266,7 @@ namespace ImageShaper
 
             this.toolStripMenuItem_Outputfolder.ToolStrip_UC_FolderSelector.Value = Cinimanager.inisettings.OutputFolder;
             this.toolStripMenuItem_previewBackgroundImage.ToolStrip_UC_FolderSelector.Value = Cinimanager.inisettings.PreviewBackgroundImage;
+            this.tbox_OutputPath.Text = Cinimanager.inisettings.OutputFolder;
 
             ///end of ini loading
 
@@ -2270,5 +2271,13 @@ namespace ImageShaper
             return files.ToArray();
         }
 
+        private void Btn_Browse_Click(object sender, EventArgs e) {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.SelectedPath = this.tbox_OutputPath.Text;
+            if (fbd.ShowDialog() == DialogResult.OK) {
+                this.tbox_OutputPath.Text = fbd.SelectedPath;
+                this.toolStripMenuItem_Outputfolder.ToolStrip_UC_FolderSelector.Value = this.tbox_OutputPath.Text;
+            }
+        }
     }
 }

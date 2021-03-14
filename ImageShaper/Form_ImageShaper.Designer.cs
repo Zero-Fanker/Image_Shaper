@@ -78,11 +78,18 @@
             this.button_CustomBackgroundColor = new System.Windows.Forms.Button();
             this.checkBox_UseCustomBackgroundColor = new System.Windows.Forms.CheckBox();
             this.checkBox_CombineTransparency = new System.Windows.Forms.CheckBox();
+            this.outputPathTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.tbox_OutputPath = new System.Windows.Forms.TextBox();
+            this.Btn_Browse = new System.Windows.Forms.Button();
+            this.lbl_OutputPath = new System.Windows.Forms.Label();
             this.customMenuStrip1 = new CustomMenuStrip();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showHidePreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem_Label_NUD_NrWorker = new ImageShaper.ToolStrip_Item_Label_NUD();
@@ -109,6 +116,7 @@
             this.tableLayoutPanel_4Compression.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_BitFields)).BeginInit();
             this.tableLayoutPanel_6CustomBackground.SuspendLayout();
+            this.outputPathTableLayoutPanel.SuspendLayout();
             this.customMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -119,12 +127,12 @@
             this.tableLayoutPanel_1Main.Controls.Add(this.tableLayoutPanel_3Start, 0, 1);
             this.tableLayoutPanel_1Main.Controls.Add(this.tableLayoutPanel_2GridPalette, 0, 0);
             this.tableLayoutPanel_1Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel_1Main.Location = new System.Drawing.Point(0, 25);
+            this.tableLayoutPanel_1Main.Location = new System.Drawing.Point(0, 29);
             this.tableLayoutPanel_1Main.Name = "tableLayoutPanel_1Main";
             this.tableLayoutPanel_1Main.RowCount = 2;
             this.tableLayoutPanel_1Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_1Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
-            this.tableLayoutPanel_1Main.Size = new System.Drawing.Size(631, 423);
+            this.tableLayoutPanel_1Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
+            this.tableLayoutPanel_1Main.Size = new System.Drawing.Size(1280, 746);
             this.tableLayoutPanel_1Main.TabIndex = 0;
             // 
             // tableLayoutPanel_3Start
@@ -137,12 +145,12 @@
             this.tableLayoutPanel_3Start.Controls.Add(this.tableLayoutPanel4_Settings, 1, 0);
             this.tableLayoutPanel_3Start.Controls.Add(this.tableLayoutPanel4_Start, 2, 0);
             this.tableLayoutPanel_3Start.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel_3Start.Location = new System.Drawing.Point(0, 348);
+            this.tableLayoutPanel_3Start.Location = new System.Drawing.Point(0, 677);
             this.tableLayoutPanel_3Start.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel_3Start.Name = "tableLayoutPanel_3Start";
             this.tableLayoutPanel_3Start.RowCount = 1;
             this.tableLayoutPanel_3Start.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_3Start.Size = new System.Drawing.Size(631, 75);
+            this.tableLayoutPanel_3Start.Size = new System.Drawing.Size(1280, 69);
             this.tableLayoutPanel_3Start.TabIndex = 1;
             // 
             // tableLayoutPanel_4Report
@@ -155,9 +163,9 @@
             this.tableLayoutPanel_4Report.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel_4Report.Name = "tableLayoutPanel_4Report";
             this.tableLayoutPanel_4Report.RowCount = 2;
-            this.tableLayoutPanel_4Report.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableLayoutPanel_4Report.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 9F));
             this.tableLayoutPanel_4Report.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_4Report.Size = new System.Drawing.Size(255, 69);
+            this.tableLayoutPanel_4Report.Size = new System.Drawing.Size(904, 63);
             this.tableLayoutPanel_4Report.TabIndex = 3;
             // 
             // progressBar1
@@ -166,17 +174,17 @@
             this.progressBar1.Location = new System.Drawing.Point(0, 0);
             this.progressBar1.Margin = new System.Windows.Forms.Padding(0);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(255, 10);
+            this.progressBar1.Size = new System.Drawing.Size(904, 9);
             this.progressBar1.TabIndex = 1;
             // 
             // richTextBox_Reports
             // 
             this.richTextBox_Reports.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox_Reports.Location = new System.Drawing.Point(0, 10);
+            this.richTextBox_Reports.Location = new System.Drawing.Point(0, 9);
             this.richTextBox_Reports.Margin = new System.Windows.Forms.Padding(0);
             this.richTextBox_Reports.Name = "richTextBox_Reports";
             this.richTextBox_Reports.ReadOnly = true;
-            this.richTextBox_Reports.Size = new System.Drawing.Size(255, 59);
+            this.richTextBox_Reports.Size = new System.Drawing.Size(904, 54);
             this.richTextBox_Reports.TabIndex = 2;
             this.richTextBox_Reports.Text = "";
             // 
@@ -188,14 +196,14 @@
             this.tableLayoutPanel4_Settings.Controls.Add(this.tableLayoutPanel_5CreateFiles, 0, 0);
             this.tableLayoutPanel4_Settings.Controls.Add(this.tableLayoutPanel_5OptimizeCanvas, 0, 2);
             this.tableLayoutPanel4_Settings.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4_Settings.Location = new System.Drawing.Point(261, 0);
+            this.tableLayoutPanel4_Settings.Location = new System.Drawing.Point(910, 0);
             this.tableLayoutPanel4_Settings.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel4_Settings.Name = "tableLayoutPanel4_Settings";
             this.tableLayoutPanel4_Settings.RowCount = 3;
-            this.tableLayoutPanel4_Settings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel4_Settings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutPanel4_Settings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel4_Settings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableLayoutPanel4_Settings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4_Settings.Size = new System.Drawing.Size(220, 75);
+            this.tableLayoutPanel4_Settings.Size = new System.Drawing.Size(220, 69);
             this.tableLayoutPanel4_Settings.TabIndex = 4;
             // 
             // checkBox_PreventWobbleBug
@@ -203,9 +211,9 @@
             this.checkBox_PreventWobbleBug.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.checkBox_PreventWobbleBug.AutoSize = true;
             this.checkBox_PreventWobbleBug.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox_PreventWobbleBug.Location = new System.Drawing.Point(79, 29);
+            this.checkBox_PreventWobbleBug.Location = new System.Drawing.Point(67, 26);
             this.checkBox_PreventWobbleBug.Name = "checkBox_PreventWobbleBug";
-            this.checkBox_PreventWobbleBug.Size = new System.Drawing.Size(138, 17);
+            this.checkBox_PreventWobbleBug.Size = new System.Drawing.Size(150, 16);
             this.checkBox_PreventWobbleBug.TabIndex = 1;
             this.checkBox_PreventWobbleBug.Text = "Prevent TS wobble bug";
             this.checkBox_PreventWobbleBug.UseVisualStyleBackColor = true;
@@ -225,7 +233,7 @@
             this.tableLayoutPanel_5CreateFiles.Name = "tableLayoutPanel_5CreateFiles";
             this.tableLayoutPanel_5CreateFiles.RowCount = 1;
             this.tableLayoutPanel_5CreateFiles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_5CreateFiles.Size = new System.Drawing.Size(220, 25);
+            this.tableLayoutPanel_5CreateFiles.Size = new System.Drawing.Size(220, 23);
             this.tableLayoutPanel_5CreateFiles.TabIndex = 2;
             // 
             // checkBox_FrameFiles
@@ -233,9 +241,9 @@
             this.checkBox_FrameFiles.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.checkBox_FrameFiles.AutoSize = true;
             this.checkBox_FrameFiles.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox_FrameFiles.Location = new System.Drawing.Point(4, 4);
+            this.checkBox_FrameFiles.Location = new System.Drawing.Point(3, 3);
             this.checkBox_FrameFiles.Name = "checkBox_FrameFiles";
-            this.checkBox_FrameFiles.Size = new System.Drawing.Size(93, 17);
+            this.checkBox_FrameFiles.Size = new System.Drawing.Size(94, 16);
             this.checkBox_FrameFiles.TabIndex = 0;
             this.checkBox_FrameFiles.Text = "Create images";
             this.checkBox_FrameFiles.UseVisualStyleBackColor = true;
@@ -245,7 +253,7 @@
             this.textBox_CreateFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_CreateFiles.Location = new System.Drawing.Point(103, 3);
             this.textBox_CreateFiles.Name = "textBox_CreateFiles";
-            this.textBox_CreateFiles.Size = new System.Drawing.Size(49, 20);
+            this.textBox_CreateFiles.Size = new System.Drawing.Size(49, 21);
             this.textBox_CreateFiles.TabIndex = 1;
             this.textBox_CreateFiles.Text = "tmpimg";
             // 
@@ -257,7 +265,7 @@
             this.comboBox_CreateFilesFormat.Location = new System.Drawing.Point(155, 3);
             this.comboBox_CreateFilesFormat.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.comboBox_CreateFilesFormat.Name = "comboBox_CreateFilesFormat";
-            this.comboBox_CreateFilesFormat.Size = new System.Drawing.Size(65, 21);
+            this.comboBox_CreateFilesFormat.Size = new System.Drawing.Size(65, 20);
             this.comboBox_CreateFilesFormat.TabIndex = 2;
             // 
             // tableLayoutPanel_5OptimizeCanvas
@@ -268,12 +276,12 @@
             this.tableLayoutPanel_5OptimizeCanvas.Controls.Add(this.checkBox_OptimizeCanvas, 0, 0);
             this.tableLayoutPanel_5OptimizeCanvas.Controls.Add(this.checkBox_KeepCentered, 1, 0);
             this.tableLayoutPanel_5OptimizeCanvas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel_5OptimizeCanvas.Location = new System.Drawing.Point(0, 50);
+            this.tableLayoutPanel_5OptimizeCanvas.Location = new System.Drawing.Point(0, 46);
             this.tableLayoutPanel_5OptimizeCanvas.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel_5OptimizeCanvas.Name = "tableLayoutPanel_5OptimizeCanvas";
             this.tableLayoutPanel_5OptimizeCanvas.RowCount = 1;
             this.tableLayoutPanel_5OptimizeCanvas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel_5OptimizeCanvas.Size = new System.Drawing.Size(220, 25);
+            this.tableLayoutPanel_5OptimizeCanvas.Size = new System.Drawing.Size(220, 23);
             this.tableLayoutPanel_5OptimizeCanvas.TabIndex = 3;
             // 
             // checkBox_OptimizeCanvas
@@ -282,7 +290,7 @@
             this.checkBox_OptimizeCanvas.Location = new System.Drawing.Point(0, 3);
             this.checkBox_OptimizeCanvas.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.checkBox_OptimizeCanvas.Name = "checkBox_OptimizeCanvas";
-            this.checkBox_OptimizeCanvas.Size = new System.Drawing.Size(83, 17);
+            this.checkBox_OptimizeCanvas.Size = new System.Drawing.Size(90, 16);
             this.checkBox_OptimizeCanvas.TabIndex = 0;
             this.checkBox_OptimizeCanvas.Text = "opt. Canvas";
             this.checkBox_OptimizeCanvas.UseVisualStyleBackColor = true;
@@ -294,7 +302,7 @@
             this.checkBox_KeepCentered.Location = new System.Drawing.Point(110, 3);
             this.checkBox_KeepCentered.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.checkBox_KeepCentered.Name = "checkBox_KeepCentered";
-            this.checkBox_KeepCentered.Size = new System.Drawing.Size(95, 17);
+            this.checkBox_KeepCentered.Size = new System.Drawing.Size(102, 16);
             this.checkBox_KeepCentered.TabIndex = 1;
             this.checkBox_KeepCentered.Text = "keep centered";
             this.checkBox_KeepCentered.UseVisualStyleBackColor = true;
@@ -305,13 +313,13 @@
             this.tableLayoutPanel4_Start.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel4_Start.Controls.Add(this.button_Start, 0, 0);
             this.tableLayoutPanel4_Start.Controls.Add(this.tableLayoutPanel5_SplitResult, 0, 1);
-            this.tableLayoutPanel4_Start.Location = new System.Drawing.Point(481, 0);
+            this.tableLayoutPanel4_Start.Location = new System.Drawing.Point(1130, 0);
             this.tableLayoutPanel4_Start.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel4_Start.Name = "tableLayoutPanel4_Start";
             this.tableLayoutPanel4_Start.RowCount = 2;
             this.tableLayoutPanel4_Start.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4_Start.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel4_Start.Size = new System.Drawing.Size(150, 75);
+            this.tableLayoutPanel4_Start.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel4_Start.Size = new System.Drawing.Size(150, 69);
             this.tableLayoutPanel4_Start.TabIndex = 5;
             // 
             // button_Start
@@ -320,7 +328,7 @@
             this.button_Start.Location = new System.Drawing.Point(3, 3);
             this.button_Start.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.button_Start.Name = "button_Start";
-            this.button_Start.Size = new System.Drawing.Size(144, 47);
+            this.button_Start.Size = new System.Drawing.Size(144, 43);
             this.button_Start.TabIndex = 0;
             this.button_Start.Text = "Start";
             this.button_Start.UseVisualStyleBackColor = true;
@@ -334,12 +342,12 @@
             this.tableLayoutPanel5_SplitResult.Controls.Add(this.numericUpDown_SplitResult, 1, 0);
             this.tableLayoutPanel5_SplitResult.Controls.Add(this.label_SplitResult, 0, 0);
             this.tableLayoutPanel5_SplitResult.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5_SplitResult.Location = new System.Drawing.Point(0, 50);
+            this.tableLayoutPanel5_SplitResult.Location = new System.Drawing.Point(0, 46);
             this.tableLayoutPanel5_SplitResult.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel5_SplitResult.Name = "tableLayoutPanel5_SplitResult";
             this.tableLayoutPanel5_SplitResult.RowCount = 1;
             this.tableLayoutPanel5_SplitResult.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5_SplitResult.Size = new System.Drawing.Size(150, 25);
+            this.tableLayoutPanel5_SplitResult.Size = new System.Drawing.Size(150, 23);
             this.tableLayoutPanel5_SplitResult.TabIndex = 1;
             // 
             // numericUpDown_SplitResult
@@ -357,7 +365,7 @@
             0,
             0});
             this.numericUpDown_SplitResult.Name = "numericUpDown_SplitResult";
-            this.numericUpDown_SplitResult.Size = new System.Drawing.Size(54, 20);
+            this.numericUpDown_SplitResult.Size = new System.Drawing.Size(54, 21);
             this.numericUpDown_SplitResult.TabIndex = 0;
             this.numericUpDown_SplitResult.Value = new decimal(new int[] {
             1,
@@ -369,9 +377,9 @@
             // 
             this.label_SplitResult.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label_SplitResult.AutoSize = true;
-            this.label_SplitResult.Location = new System.Drawing.Point(29, 6);
+            this.label_SplitResult.Location = new System.Drawing.Point(4, 5);
             this.label_SplitResult.Name = "label_SplitResult";
-            this.label_SplitResult.Size = new System.Drawing.Size(58, 13);
+            this.label_SplitResult.Size = new System.Drawing.Size(83, 12);
             this.label_SplitResult.TabIndex = 1;
             this.label_SplitResult.Text = "Split result:";
             // 
@@ -380,15 +388,17 @@
             this.tableLayoutPanel_2GridPalette.ColumnCount = 2;
             this.tableLayoutPanel_2GridPalette.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
             this.tableLayoutPanel_2GridPalette.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel_2GridPalette.Controls.Add(this.dataGridView_Files, 0, 0);
-            this.tableLayoutPanel_2GridPalette.Controls.Add(this.tableLayoutPanel_3Settings, 1, 0);
+            this.tableLayoutPanel_2GridPalette.Controls.Add(this.dataGridView_Files, 0, 1);
+            this.tableLayoutPanel_2GridPalette.Controls.Add(this.tableLayoutPanel_3Settings, 1, 1);
+            this.tableLayoutPanel_2GridPalette.Controls.Add(this.outputPathTableLayoutPanel, 0, 0);
             this.tableLayoutPanel_2GridPalette.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel_2GridPalette.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel_2GridPalette.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel_2GridPalette.Name = "tableLayoutPanel_2GridPalette";
-            this.tableLayoutPanel_2GridPalette.RowCount = 1;
+            this.tableLayoutPanel_2GridPalette.RowCount = 2;
+            this.tableLayoutPanel_2GridPalette.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel_2GridPalette.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_2GridPalette.Size = new System.Drawing.Size(631, 348);
+            this.tableLayoutPanel_2GridPalette.Size = new System.Drawing.Size(1280, 677);
             this.tableLayoutPanel_2GridPalette.TabIndex = 4;
             // 
             // dataGridView_Files
@@ -403,10 +413,10 @@
             this.Column_ImagesB,
             this.Column_ImagesC});
             this.dataGridView_Files.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView_Files.Location = new System.Drawing.Point(3, 3);
+            this.dataGridView_Files.Location = new System.Drawing.Point(3, 33);
             this.dataGridView_Files.Name = "dataGridView_Files";
             this.dataGridView_Files.RowHeadersWidth = 50;
-            this.dataGridView_Files.Size = new System.Drawing.Size(435, 342);
+            this.dataGridView_Files.Size = new System.Drawing.Size(890, 641);
             this.dataGridView_Files.TabIndex = 3;
             // 
             // Column_ImagesA
@@ -437,13 +447,13 @@
             this.tableLayoutPanel_3Settings.Controls.Add(this.groupBox_Palette, 0, 0);
             this.tableLayoutPanel_3Settings.Controls.Add(this.groupBox_FrameSettings, 0, 1);
             this.tableLayoutPanel_3Settings.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel_3Settings.Location = new System.Drawing.Point(441, 0);
+            this.tableLayoutPanel_3Settings.Location = new System.Drawing.Point(896, 30);
             this.tableLayoutPanel_3Settings.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel_3Settings.Name = "tableLayoutPanel_3Settings";
             this.tableLayoutPanel_3Settings.RowCount = 2;
             this.tableLayoutPanel_3Settings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_3Settings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 145F));
-            this.tableLayoutPanel_3Settings.Size = new System.Drawing.Size(190, 348);
+            this.tableLayoutPanel_3Settings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 134F));
+            this.tableLayoutPanel_3Settings.Size = new System.Drawing.Size(384, 647);
             this.tableLayoutPanel_3Settings.TabIndex = 4;
             // 
             // groupBox_Palette
@@ -453,7 +463,7 @@
             this.groupBox_Palette.Location = new System.Drawing.Point(0, 0);
             this.groupBox_Palette.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.groupBox_Palette.Name = "groupBox_Palette";
-            this.groupBox_Palette.Size = new System.Drawing.Size(190, 198);
+            this.groupBox_Palette.Size = new System.Drawing.Size(384, 508);
             this.groupBox_Palette.TabIndex = 6;
             this.groupBox_Palette.TabStop = false;
             this.groupBox_Palette.Text = "Palette Manager";
@@ -464,22 +474,23 @@
             this.uC_Palette1.ContextMenuLoadEnabled = true;
             this.uC_Palette1.ContextMenuSaveEnabled = true;
             this.uC_Palette1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uC_Palette1.Location = new System.Drawing.Point(3, 16);
+            this.uC_Palette1.Location = new System.Drawing.Point(3, 17);
             this.uC_Palette1.Margin = new System.Windows.Forms.Padding(0);
             this.uC_Palette1.Name = "uC_Palette1";
             this.uC_Palette1.Palette = null;
             this.uC_Palette1.PaletteSelectedColor = 0;
-            this.uC_Palette1.Size = new System.Drawing.Size(184, 179);
+            this.uC_Palette1.ShowPaletteOnly = false;
+            this.uC_Palette1.Size = new System.Drawing.Size(378, 488);
             this.uC_Palette1.TabIndex = 3;
             // 
             // groupBox_FrameSettings
             // 
             this.groupBox_FrameSettings.Controls.Add(this.tableLayoutPanel_3FrameSettings);
             this.groupBox_FrameSettings.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox_FrameSettings.Location = new System.Drawing.Point(0, 203);
+            this.groupBox_FrameSettings.Location = new System.Drawing.Point(0, 513);
             this.groupBox_FrameSettings.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox_FrameSettings.Name = "groupBox_FrameSettings";
-            this.groupBox_FrameSettings.Size = new System.Drawing.Size(190, 145);
+            this.groupBox_FrameSettings.Size = new System.Drawing.Size(384, 134);
             this.groupBox_FrameSettings.TabIndex = 7;
             this.groupBox_FrameSettings.TabStop = false;
             this.groupBox_FrameSettings.Text = "Image/Frame Settings";
@@ -494,16 +505,16 @@
             this.tableLayoutPanel_3FrameSettings.Controls.Add(this.tableLayoutPanel_6CustomBackground, 0, 3);
             this.tableLayoutPanel_3FrameSettings.Controls.Add(this.checkBox_CombineTransparency, 0, 4);
             this.tableLayoutPanel_3FrameSettings.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel_3FrameSettings.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel_3FrameSettings.Location = new System.Drawing.Point(3, 17);
             this.tableLayoutPanel_3FrameSettings.Name = "tableLayoutPanel_3FrameSettings";
             this.tableLayoutPanel_3FrameSettings.RowCount = 6;
-            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableLayoutPanel_3FrameSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_3FrameSettings.Size = new System.Drawing.Size(184, 126);
+            this.tableLayoutPanel_3FrameSettings.Size = new System.Drawing.Size(378, 114);
             this.tableLayoutPanel_3FrameSettings.TabIndex = 0;
             // 
             // tableLayoutPanel_4RadarColor
@@ -516,22 +527,22 @@
             this.tableLayoutPanel_4RadarColor.Controls.Add(this.checkBox_RadarColorAverage, 2, 0);
             this.tableLayoutPanel_4RadarColor.Controls.Add(this.button_RadarColor, 1, 0);
             this.tableLayoutPanel_4RadarColor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel_4RadarColor.Location = new System.Drawing.Point(0, 50);
+            this.tableLayoutPanel_4RadarColor.Location = new System.Drawing.Point(0, 46);
             this.tableLayoutPanel_4RadarColor.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel_4RadarColor.Name = "tableLayoutPanel_4RadarColor";
             this.tableLayoutPanel_4RadarColor.RowCount = 1;
             this.tableLayoutPanel_4RadarColor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_4RadarColor.Size = new System.Drawing.Size(184, 25);
+            this.tableLayoutPanel_4RadarColor.Size = new System.Drawing.Size(378, 23);
             this.tableLayoutPanel_4RadarColor.TabIndex = 5;
             // 
             // label_RadarColor
             // 
             this.label_RadarColor.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label_RadarColor.AutoSize = true;
-            this.label_RadarColor.Location = new System.Drawing.Point(6, 6);
+            this.label_RadarColor.Location = new System.Drawing.Point(192, 5);
             this.label_RadarColor.Margin = new System.Windows.Forms.Padding(0);
             this.label_RadarColor.Name = "label_RadarColor";
-            this.label_RadarColor.Size = new System.Drawing.Size(63, 13);
+            this.label_RadarColor.Size = new System.Drawing.Size(71, 12);
             this.label_RadarColor.TabIndex = 2;
             this.label_RadarColor.Text = "RadarColor:";
             this.label_RadarColor.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -541,10 +552,10 @@
             this.checkBox_RadarColorAverage.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.checkBox_RadarColorAverage.AutoSize = true;
             this.checkBox_RadarColorAverage.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox_RadarColorAverage.Location = new System.Drawing.Point(137, 4);
+            this.checkBox_RadarColorAverage.Location = new System.Drawing.Point(330, 3);
             this.checkBox_RadarColorAverage.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.checkBox_RadarColorAverage.Name = "checkBox_RadarColorAverage";
-            this.checkBox_RadarColorAverage.Size = new System.Drawing.Size(47, 17);
+            this.checkBox_RadarColorAverage.Size = new System.Drawing.Size(48, 16);
             this.checkBox_RadarColorAverage.TabIndex = 5;
             this.checkBox_RadarColorAverage.Text = "avg.";
             this.checkBox_RadarColorAverage.UseVisualStyleBackColor = true;
@@ -554,10 +565,10 @@
             // 
             this.button_RadarColor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button_RadarColor.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_RadarColor.Location = new System.Drawing.Point(70, 1);
+            this.button_RadarColor.Location = new System.Drawing.Point(264, 1);
             this.button_RadarColor.Margin = new System.Windows.Forms.Padding(1);
             this.button_RadarColor.Name = "button_RadarColor";
-            this.button_RadarColor.Size = new System.Drawing.Size(63, 23);
+            this.button_RadarColor.Size = new System.Drawing.Size(63, 21);
             this.button_RadarColor.TabIndex = 6;
             this.button_RadarColor.Text = "#DDDDDD";
             this.button_RadarColor.UseVisualStyleBackColor = true;
@@ -575,17 +586,17 @@
             this.tableLayoutPanel_4Compression.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel_4Compression.Name = "tableLayoutPanel_4Compression";
             this.tableLayoutPanel_4Compression.RowCount = 1;
-            this.tableLayoutPanel_4Compression.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel_4Compression.Size = new System.Drawing.Size(184, 25);
+            this.tableLayoutPanel_4Compression.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel_4Compression.Size = new System.Drawing.Size(378, 23);
             this.tableLayoutPanel_4Compression.TabIndex = 4;
             // 
             // label_Compression
             // 
             this.label_Compression.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label_Compression.AutoSize = true;
-            this.label_Compression.Location = new System.Drawing.Point(3, 6);
+            this.label_Compression.Location = new System.Drawing.Point(3, 5);
             this.label_Compression.Name = "label_Compression";
-            this.label_Compression.Size = new System.Drawing.Size(70, 13);
+            this.label_Compression.Size = new System.Drawing.Size(77, 12);
             this.label_Compression.TabIndex = 0;
             this.label_Compression.Text = "Compression:";
             // 
@@ -597,7 +608,7 @@
             this.comboBox_Compression.Location = new System.Drawing.Point(100, 2);
             this.comboBox_Compression.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
             this.comboBox_Compression.Name = "comboBox_Compression";
-            this.comboBox_Compression.Size = new System.Drawing.Size(84, 21);
+            this.comboBox_Compression.Size = new System.Drawing.Size(278, 20);
             this.comboBox_Compression.TabIndex = 1;
             this.comboBox_Compression.SelectedIndexChanged += new System.EventHandler(this.comboBox_Compression_SelectedIndexChanged);
             // 
@@ -620,11 +631,11 @@
             this.Column_Bit7,
             this.Column_Bit8});
             this.dataGridView_BitFields.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView_BitFields.Location = new System.Drawing.Point(0, 25);
+            this.dataGridView_BitFields.Location = new System.Drawing.Point(0, 23);
             this.dataGridView_BitFields.Margin = new System.Windows.Forms.Padding(0);
             this.dataGridView_BitFields.Name = "dataGridView_BitFields";
             this.dataGridView_BitFields.RowHeadersVisible = false;
-            this.dataGridView_BitFields.Size = new System.Drawing.Size(184, 25);
+            this.dataGridView_BitFields.Size = new System.Drawing.Size(378, 23);
             this.dataGridView_BitFields.TabIndex = 6;
             // 
             // Column_Bit1
@@ -678,22 +689,22 @@
             this.tableLayoutPanel_6CustomBackground.Controls.Add(this.button_CustomBackgroundColor, 1, 0);
             this.tableLayoutPanel_6CustomBackground.Controls.Add(this.checkBox_UseCustomBackgroundColor, 0, 0);
             this.tableLayoutPanel_6CustomBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel_6CustomBackground.Location = new System.Drawing.Point(0, 75);
+            this.tableLayoutPanel_6CustomBackground.Location = new System.Drawing.Point(0, 69);
             this.tableLayoutPanel_6CustomBackground.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel_6CustomBackground.Name = "tableLayoutPanel_6CustomBackground";
             this.tableLayoutPanel_6CustomBackground.RowCount = 1;
             this.tableLayoutPanel_6CustomBackground.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_6CustomBackground.Size = new System.Drawing.Size(184, 25);
+            this.tableLayoutPanel_6CustomBackground.Size = new System.Drawing.Size(378, 23);
             this.tableLayoutPanel_6CustomBackground.TabIndex = 7;
             // 
             // button_CustomBackgroundColor
             // 
             this.button_CustomBackgroundColor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button_CustomBackgroundColor.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button_CustomBackgroundColor.Location = new System.Drawing.Point(120, 1);
+            this.button_CustomBackgroundColor.Location = new System.Drawing.Point(314, 1);
             this.button_CustomBackgroundColor.Margin = new System.Windows.Forms.Padding(1);
             this.button_CustomBackgroundColor.Name = "button_CustomBackgroundColor";
-            this.button_CustomBackgroundColor.Size = new System.Drawing.Size(63, 23);
+            this.button_CustomBackgroundColor.Size = new System.Drawing.Size(63, 21);
             this.button_CustomBackgroundColor.TabIndex = 0;
             this.button_CustomBackgroundColor.Text = "#DDDDDD";
             this.button_CustomBackgroundColor.UseVisualStyleBackColor = true;
@@ -703,10 +714,10 @@
             // 
             this.checkBox_UseCustomBackgroundColor.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.checkBox_UseCustomBackgroundColor.AutoSize = true;
-            this.checkBox_UseCustomBackgroundColor.Location = new System.Drawing.Point(20, 4);
+            this.checkBox_UseCustomBackgroundColor.Location = new System.Drawing.Point(199, 3);
             this.checkBox_UseCustomBackgroundColor.Margin = new System.Windows.Forms.Padding(0);
             this.checkBox_UseCustomBackgroundColor.Name = "checkBox_UseCustomBackgroundColor";
-            this.checkBox_UseCustomBackgroundColor.Size = new System.Drawing.Size(99, 17);
+            this.checkBox_UseCustomBackgroundColor.Size = new System.Drawing.Size(114, 16);
             this.checkBox_UseCustomBackgroundColor.TabIndex = 1;
             this.checkBox_UseCustomBackgroundColor.Text = "fixed Backcolor";
             this.checkBox_UseCustomBackgroundColor.UseVisualStyleBackColor = true;
@@ -716,26 +727,72 @@
             // 
             this.checkBox_CombineTransparency.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.checkBox_CombineTransparency.AutoSize = true;
-            this.checkBox_CombineTransparency.Location = new System.Drawing.Point(35, 104);
+            this.checkBox_CombineTransparency.Location = new System.Drawing.Point(201, 95);
             this.checkBox_CombineTransparency.Name = "checkBox_CombineTransparency";
-            this.checkBox_CombineTransparency.Size = new System.Drawing.Size(146, 17);
+            this.checkBox_CombineTransparency.Size = new System.Drawing.Size(174, 16);
             this.checkBox_CombineTransparency.TabIndex = 8;
             this.checkBox_CombineTransparency.Text = "combine transparent pixel";
             this.checkBox_CombineTransparency.UseVisualStyleBackColor = true;
             this.checkBox_CombineTransparency.CheckedChanged += new System.EventHandler(this.checkBox_CombineTransparency_CheckedChanged);
+            // 
+            // outputPathTableLayoutPanel
+            // 
+            this.outputPathTableLayoutPanel.ColumnCount = 3;
+            this.outputPathTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.outputPathTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.outputPathTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.outputPathTableLayoutPanel.Controls.Add(this.tbox_OutputPath, 1, 0);
+            this.outputPathTableLayoutPanel.Controls.Add(this.Btn_Browse, 2, 0);
+            this.outputPathTableLayoutPanel.Controls.Add(this.lbl_OutputPath, 0, 0);
+            this.outputPathTableLayoutPanel.Location = new System.Drawing.Point(3, 3);
+            this.outputPathTableLayoutPanel.Name = "outputPathTableLayoutPanel";
+            this.outputPathTableLayoutPanel.RowCount = 1;
+            this.outputPathTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.outputPathTableLayoutPanel.Size = new System.Drawing.Size(890, 24);
+            this.outputPathTableLayoutPanel.TabIndex = 5;
+            // 
+            // tbox_OutputPath
+            // 
+            this.tbox_OutputPath.Location = new System.Drawing.Point(83, 3);
+            this.tbox_OutputPath.Name = "tbox_OutputPath";
+            this.tbox_OutputPath.Size = new System.Drawing.Size(738, 21);
+            this.tbox_OutputPath.TabIndex = 0;
+            // 
+            // Btn_Browse
+            // 
+            this.Btn_Browse.Location = new System.Drawing.Point(833, 3);
+            this.Btn_Browse.Name = "Btn_Browse";
+            this.Btn_Browse.Size = new System.Drawing.Size(54, 18);
+            this.Btn_Browse.TabIndex = 1;
+            this.Btn_Browse.Text = "Browse";
+            this.Btn_Browse.UseVisualStyleBackColor = true;
+            this.Btn_Browse.Click += new System.EventHandler(this.Btn_Browse_Click);
+            // 
+            // lbl_OutputPath
+            // 
+            this.lbl_OutputPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lbl_OutputPath.AutoSize = true;
+            this.lbl_OutputPath.Location = new System.Drawing.Point(3, 3);
+            this.lbl_OutputPath.Margin = new System.Windows.Forms.Padding(3);
+            this.lbl_OutputPath.Name = "lbl_OutputPath";
+            this.lbl_OutputPath.Size = new System.Drawing.Size(71, 18);
+            this.lbl_OutputPath.TabIndex = 2;
+            this.lbl_OutputPath.Text = "Output Path";
             // 
             // customMenuStrip1
             // 
             this.customMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.infoToolStripMenuItem,
             this.fileToolStripMenuItem,
+            this.EditToolMenuItem,
             this.showHidePreviewToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.toolStripLabel_DefaultCompression,
             this.toolStripComboBox_DefaultCompression});
             this.customMenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.customMenuStrip1.Name = "customMenuStrip1";
-            this.customMenuStrip1.Size = new System.Drawing.Size(631, 25);
+            this.customMenuStrip1.Size = new System.Drawing.Size(1280, 29);
             this.customMenuStrip1.TabIndex = 1;
             this.customMenuStrip1.Text = "customMenuStrip1";
             // 
@@ -744,7 +801,7 @@
             this.infoToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.infoToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
-            this.infoToolStripMenuItem.Size = new System.Drawing.Size(39, 21);
+            this.infoToolStripMenuItem.Size = new System.Drawing.Size(43, 25);
             this.infoToolStripMenuItem.Text = "Info";
             this.infoToolStripMenuItem.Click += new System.EventHandler(this.infoToolStripMenuItem_Click);
             // 
@@ -755,14 +812,14 @@
             this.loadProjectToolStripMenuItem});
             this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 21);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(39, 25);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // saveProjectToolStripMenuItem
             // 
             this.saveProjectToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
-            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.saveProjectToolStripMenuItem.Text = "Save Project";
             this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.saveProjectToolStripMenuItem_Click);
             // 
@@ -770,15 +827,39 @@
             // 
             this.loadProjectToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.loadProjectToolStripMenuItem.Name = "loadProjectToolStripMenuItem";
-            this.loadProjectToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.loadProjectToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.loadProjectToolStripMenuItem.Text = "Load Project";
             this.loadProjectToolStripMenuItem.Click += new System.EventHandler(this.loadProjectToolStripMenuItem_Click);
+            // 
+            // EditToolMenuItem
+            // 
+            this.EditToolMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadPaletteToolStripMenuItem,
+            this.setPaletteToolStripMenuItem});
+            this.EditToolMenuItem.ForeColor = System.Drawing.Color.White;
+            this.EditToolMenuItem.Name = "EditToolMenuItem";
+            this.EditToolMenuItem.Size = new System.Drawing.Size(42, 25);
+            this.EditToolMenuItem.Text = "Edit";
+            // 
+            // loadPaletteToolStripMenuItem
+            // 
+            this.loadPaletteToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.loadPaletteToolStripMenuItem.Name = "loadPaletteToolStripMenuItem";
+            this.loadPaletteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.loadPaletteToolStripMenuItem.Text = "Load Palette";
+            // 
+            // setPaletteToolStripMenuItem
+            // 
+            this.setPaletteToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.setPaletteToolStripMenuItem.Name = "setPaletteToolStripMenuItem";
+            this.setPaletteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.setPaletteToolStripMenuItem.Text = "Set Palette";
             // 
             // showHidePreviewToolStripMenuItem
             // 
             this.showHidePreviewToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.showHidePreviewToolStripMenuItem.Name = "showHidePreviewToolStripMenuItem";
-            this.showHidePreviewToolStripMenuItem.Size = new System.Drawing.Size(111, 21);
+            this.showHidePreviewToolStripMenuItem.Size = new System.Drawing.Size(131, 25);
             this.showHidePreviewToolStripMenuItem.Text = "Show/Hide Preview";
             this.showHidePreviewToolStripMenuItem.Click += new System.EventHandler(this.showHidePreviewToolStripMenuItem_Click);
             // 
@@ -791,7 +872,7 @@
             this.optionsToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.optionsToolStripMenuItem.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 21);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(66, 25);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // toolStripMenuItem_Label_NUD_NrWorker
@@ -828,25 +909,25 @@
             this.toolStripLabel_DefaultCompression.ForeColor = System.Drawing.Color.White;
             this.toolStripLabel_DefaultCompression.Margin = new System.Windows.Forms.Padding(10, 1, 0, 1);
             this.toolStripLabel_DefaultCompression.Name = "toolStripLabel_DefaultCompression";
-            this.toolStripLabel_DefaultCompression.Size = new System.Drawing.Size(72, 19);
+            this.toolStripLabel_DefaultCompression.Size = new System.Drawing.Size(88, 23);
             this.toolStripLabel_DefaultCompression.Text = "Compression:";
             // 
             // toolStripComboBox_DefaultCompression
             // 
             this.toolStripComboBox_DefaultCompression.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBox_DefaultCompression.Name = "toolStripComboBox_DefaultCompression";
-            this.toolStripComboBox_DefaultCompression.Size = new System.Drawing.Size(120, 21);
+            this.toolStripComboBox_DefaultCompression.Size = new System.Drawing.Size(120, 25);
             // 
             // Form_ImageShaper
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(631, 448);
+            this.ClientSize = new System.Drawing.Size(1280, 775);
             this.Controls.Add(this.tableLayoutPanel_1Main);
             this.Controls.Add(this.customMenuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.customMenuStrip1;
-            this.MinimumSize = new System.Drawing.Size(639, 475);
+            this.MinimumSize = new System.Drawing.Size(639, 441);
             this.Name = "Form_ImageShaper";
             this.Text = "Title";
             this.tableLayoutPanel_1Main.ResumeLayout(false);
@@ -876,6 +957,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_BitFields)).EndInit();
             this.tableLayoutPanel_6CustomBackground.ResumeLayout(false);
             this.tableLayoutPanel_6CustomBackground.PerformLayout();
+            this.outputPathTableLayoutPanel.ResumeLayout(false);
+            this.outputPathTableLayoutPanel.PerformLayout();
             this.customMenuStrip1.ResumeLayout(false);
             this.customMenuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -944,8 +1027,15 @@
         private System.Windows.Forms.ToolStripMenuItem loadProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStrip_Item_Label_NUD toolStripMenuItem_Label_NUD_NrWorker;
-        private ToolStrip_Item_FolderSelector toolStripMenuItem_Outputfolder;
         private ToolStrip_Item_FolderSelector toolStripMenuItem_previewBackgroundImage;
+        private System.Windows.Forms.ToolStripMenuItem EditToolMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadPaletteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setPaletteToolStripMenuItem;
+        private ToolStrip_Item_FolderSelector toolStripMenuItem_Outputfolder;
+        private System.Windows.Forms.TableLayoutPanel outputPathTableLayoutPanel;
+        private System.Windows.Forms.TextBox tbox_OutputPath;
+        private System.Windows.Forms.Button Btn_Browse;
+        private System.Windows.Forms.Label lbl_OutputPath;
     }
 }
 
