@@ -311,23 +311,36 @@ namespace ImageShaper
                         int palette_col = 0;
                         if (input.PixelFormat != PixelFormat.Format8bppIndexed)
                         {
-                            if (s == 4)
+                            if (s == 4) {
                                 c = Color.FromArgb(
                                      input_bytes[(x * s) + y * input_data.Stride + 3],
                                      input_bytes[(x * s) + y * input_data.Stride + 2],
                                      input_bytes[(x * s) + y * input_data.Stride + 1],
                                      input_bytes[(x * s) + y * input_data.Stride]);
-                            if (s == 3)
+                            }
+
+                            if (s == 3) { 
                                 c = Color.FromArgb(
                                      input_bytes[(x * s) + y * input_data.Stride + 2],
                                      input_bytes[(x * s) + y * input_data.Stride + 1],
                                      input_bytes[(x * s) + y * input_data.Stride]);
+                            }
 
+                            if (s == 4) {
+                                var paletteTransColor = Palette.palette[0].Color;
+                                if (c.A == 0 || (c.R == paletteTransColor.R) && (c.G == paletteTransColor.G) && (c.B == paletteTransColor.B)) {
+                                    palette_col = 0;
+                                } else {
+                                    palette_col = LookUpTable.GetPaletteColor(c, Palette);
+                                }
+                            } else {
+                                if ((c.R == FrameTransparentColor.R) && (c.G == FrameTransparentColor.G) && (c.B == FrameTransparentColor.B)) {
+                                    palette_col = 0;
+                                } else {
+                                    palette_col = LookUpTable.GetPaletteColor(c, Palette);
+                                }
+                            }
 
-                            if ((c.R == FrameTransparentColor.R) && (c.G == FrameTransparentColor.G) && (c.B == FrameTransparentColor.B))
-                                palette_col = 0;
-                            else
-                                palette_col = LookUpTable.GetPaletteColor(c, Palette);
                         }
                         else //palette indexed images are loaded directly. no color conversion is done
                             palette_col = input_bytes[x + y * input_data.Stride];
