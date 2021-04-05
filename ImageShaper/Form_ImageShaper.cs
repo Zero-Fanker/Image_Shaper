@@ -13,13 +13,11 @@ using System.Diagnostics;
 
 namespace ImageShaper
 {
-    public partial class Form_ImageShaper : Form
-    {
+    public partial class Form_ImageShaper : Form {
         public const string ProgramName = "Image Shaper";
         private ContextMenuStrip dataGrid_CM;
 
-        private enum SplitFrame : int
-        {
+        private enum SplitFrame : int {
             Specific = -1,
             Begin = Specific - 3,
             End = Specific - 2,
@@ -27,9 +25,50 @@ namespace ImageShaper
             Numberic = Specific,
         }
 
+        private struct RectangleOffset
+        {
+            public int Left;
+            public int Right;
+            public int Top;
+            public int Bottom;
+
+            public bool IsEmpty
+            {
+                get {
+                    return Left == 0 && Right == 0 && Top == 0 && Bottom == 0;
+                }
+            }
+
+            public int XShift
+            {
+                get {
+                    return Left;
+                }
+            }
+            public int YShift
+            {
+                get {
+                    return Top;
+                }
+            }
+            public int DeltaWidth
+            {
+                get {
+                    return Left + Right;
+                }
+            }
+            public int DeltaHeight
+            {
+                get {
+                    return Top + Bottom;
+                }
+            }
+        }
+
         private SplitFrame SplitStartFrame;
         private SplitFrame SplitEndFrame;
         private int SplitInterval;
+        private RectangleOffset CanvasOffset;
         private bool SplitWithShadow;
         private bool TrimInputName;
         private bool SilentWhenDone;
@@ -40,16 +79,13 @@ namespace ImageShaper
         [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "SetWindowPos")]
         private static extern int SetWindowPos(int hWnd, int hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-        static void ShowInactiveTopmost(Form frm)
-        {
+        static void ShowInactiveTopmost(Form frm) {
             if ((frm == null) || (frm.IsDisposed))
                 return;
-            try
-            {
+            try {
                 ShowWindow(frm.Handle, 4);
                 SetWindowPos(frm.Handle.ToInt32(), 0, frm.Left, frm.Top, frm.Width, frm.Height, 0x0010);
-            }
-            catch { }
+            } catch { }
         }
 
         private string GetProgramPath
@@ -64,8 +100,7 @@ namespace ImageShaper
         /// <summary>
         /// show index number in row header
         /// </summary>
-        void dataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
-        {
+        void dataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e) {
             var grid = sender as DataGridView;
             var rowIdx = e.RowIndex.ToString("00000");
 
@@ -81,30 +116,24 @@ namespace ImageShaper
                 e.Graphics.DrawString(rowIdx, this.dataGridView_Files.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
-        void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
+        void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
             DataGridViewColumn column = this.dataGridView_Files.Columns[e.ColumnIndex];
-            if (this.dataGridView_Files.Rows.Count > 0)
-            {
+            if (this.dataGridView_Files.Rows.Count > 0) {
                 bool selected = !this.dataGridView_Files.Rows[0].Cells[column.Index].Selected;
-                foreach (DataGridViewRow row in this.dataGridView_Files.Rows)
-                {
+                foreach (DataGridViewRow row in this.dataGridView_Files.Rows) {
                     row.Cells[column.Index].Selected = selected;
                 }
             }
             UpdatePreview();
         }
 
-        void Form_ImageShaper_WindowChange(object sender, EventArgs e)
-        {
+        void Form_ImageShaper_WindowChange(object sender, EventArgs e) {
             if (form_Preview != null)
                 form_Preview.Location = new Point(this.Location.X + this.Width, this.Location.Y);
         }
 
-        private ImageFormat getImageFormat(string extension)
-        {
-            switch (extension.ToLower())
-            {
+        private ImageFormat getImageFormat(string extension) {
+            switch (extension.ToLower()) {
                 case "png": return ImageFormat.Png;
                 case "bmp": return ImageFormat.Bmp;
                 case "gif": return ImageFormat.Gif;
@@ -115,19 +144,16 @@ namespace ImageShaper
 
         public SHP_TS_EncodingFormat GetDefaultCompression
         {
-            get
-            {
+            get {
                 //the 0. item is the "Undefined" compression, which is not present in the global compression combobox
                 return (SHP_TS_EncodingFormat)(this.toolStripComboBox_DefaultCompression.SelectedIndex + 1);
             }
         }
 
-        void Form_ImageShaper_FormClosing(object sender, FormClosingEventArgs e)
-        {
+        void Form_ImageShaper_FormClosing(object sender, FormClosingEventArgs e) {
             if (RunAsCommand) return;//don't save anything when run as console command
 
-            if ((this.Location.X >= 0) && (this.Location.Y >= 0))
-            {
+            if ((this.Location.X >= 0) && (this.Location.Y >= 0)) {
                 Cinimanager.inisettings.StartPosition = this.Location;
                 Cinimanager.inisettings.StartSize = this.Size;
             }
@@ -157,8 +183,7 @@ namespace ImageShaper
             Cinimanager.SaveIniSettings();
         }
 
-        public Form_ImageShaper()
-        {
+        public Form_ImageShaper() {
             InitializeComponent();
             System.Reflection.Assembly thisAssembly = System.Reflection.Assembly.GetExecutingAssembly();
             string version = thisAssembly.GetName().Version.Major.ToString("D2") + "." +
@@ -179,16 +204,14 @@ namespace ImageShaper
 
 
             this.comboBox_Compression.Items.Clear();
-            foreach (SHP_TS_EncodingFormat ef in Enum.GetValues(typeof(SHP_TS_EncodingFormat)))
-            {
+            foreach (SHP_TS_EncodingFormat ef in Enum.GetValues(typeof(SHP_TS_EncodingFormat))) {
                 this.comboBox_Compression.Items.Add(ef.ToString());
             }
             this.comboBox_Compression.SelectedIndex = 0;
 
 
             this.toolStripComboBox_DefaultCompression.Items.Clear();
-            foreach (SHP_TS_EncodingFormat ef in Enum.GetValues(typeof(SHP_TS_EncodingFormat)))
-            {
+            foreach (SHP_TS_EncodingFormat ef in Enum.GetValues(typeof(SHP_TS_EncodingFormat))) {
                 if (ef != SHP_TS_EncodingFormat.Undefined)
                     this.toolStripComboBox_DefaultCompression.Items.Add(ef);
             }
@@ -210,15 +233,13 @@ namespace ImageShaper
                 this.Location = Cinimanager.inisettings.StartPosition;
 
             Boolean isWindowOnScreen = false;
-            for (int i = 0; i < System.Windows.Forms.Screen.AllScreens.Length; i++)
-            {
+            for (int i = 0; i < System.Windows.Forms.Screen.AllScreens.Length; i++) {
                 if (
                     (this.Location.X < System.Windows.Forms.Screen.AllScreens[i].WorkingArea.Right - 10) &&
                     (this.Location.Y < System.Windows.Forms.Screen.AllScreens[i].WorkingArea.Bottom - 10) &&
                     (this.Location.X >= System.Windows.Forms.Screen.AllScreens[i].WorkingArea.Left) &&
                     (this.Location.Y >= System.Windows.Forms.Screen.AllScreens[i].WorkingArea.Top - 18)
-                    )
-                {
+                    ) {
                     isWindowOnScreen = true;
                     break;
                 }
@@ -232,16 +253,14 @@ namespace ImageShaper
             this.Size = Cinimanager.inisettings.StartSize;
             this.checkBox_PreventWobbleBug.Checked = Cinimanager.inisettings.PreventTSWobbleBug;
 
-            for (int i = 0; i < this.toolStripComboBox_DefaultCompression.Items.Count; i++)
-            {
+            for (int i = 0; i < this.toolStripComboBox_DefaultCompression.Items.Count; i++) {
                 if (Cinimanager.inisettings.DefaultCompression == (SHP_TS_EncodingFormat)this.toolStripComboBox_DefaultCompression.Items[i])
                     this.toolStripComboBox_DefaultCompression.SelectedIndex = i;
             }
 
             this.checkBox_FrameFiles.Checked = Cinimanager.inisettings.CreateImages;
             this.textBox_CreateFiles.Text = Cinimanager.inisettings.CreateImages_FileName;
-            for (int i = 0; i < this.comboBox_CreateFilesFormat.Items.Count; i++)
-            {
+            for (int i = 0; i < this.comboBox_CreateFilesFormat.Items.Count; i++) {
                 if (this.comboBox_CreateFilesFormat.Items[i].ToString() == Cinimanager.inisettings.CreateImages_Format)
                     this.comboBox_CreateFilesFormat.SelectedIndex = i;
             }
@@ -332,7 +351,7 @@ namespace ImageShaper
             toolTip1.SetToolTip(this.comboBox_Compression, "The compression method of the selected image/frame.\n\"Undefined\" means, this frame will use the global setting from the menustrip.");
             this.dataGridView_BitFields.ShowCellToolTips = false;
             toolTip1.SetToolTip(this.dataGridView_BitFields, "The bit flags with the compression as the second bit. The compression bit can only be changed via the combobox above.\nBy default the first bit is set, since nearly all TS/RA2 SHPs have that bit set.");
-            
+
             toolTip1.SetToolTip(this.button_RadarColor, "The frame's Radarcolor. Works only on tiberium/ore Overlays.\nTS and RA2 ignore it for all other objecttypes.");
             toolTip1.SetToolTip(this.checkBox_RadarColorAverage, "Ignore the set color and instead calculate for this frame the average color of all colored pixel.");
             toolTip1.SetToolTip(this.checkBox_FrameFiles, "Create for each frame an image file in the \\Temp subfolder.");
@@ -366,30 +385,26 @@ namespace ImageShaper
             SplitStartFrame = SplitFrame.Begin;
             SplitEndFrame = SplitFrame.End;
             SplitInterval = 1;
+            CanvasOffset = new RectangleOffset();
             SplitWithShadow = false;
             TrimInputName = true;
             SilentWhenDone = false;
-    }
+        }
 
-        void uC_Palette1_PaletteChanged(object sender, EventArgs e)
-        {
+        void uC_Palette1_PaletteChanged(object sender, EventArgs e) {
             UpdatePreview();
         }
 
-        void Form_ImageShaper_Activated(object sender, EventArgs e)
-        {
+        void Form_ImageShaper_Activated(object sender, EventArgs e) {
             if (form_Preview != null)
                 ShowInactiveTopmost(form_Preview);
         }
 
         #region bitfield
-        private void comboBox_Compression_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        private void comboBox_Compression_SelectedIndexChanged(object sender, EventArgs e) {
             SetBitField(GetBitField(), (SHP_TS_EncodingFormat)this.comboBox_Compression.SelectedIndex);
-            if (this.comboBox_Compression.Focused)
-            {
-                if (this.dataGridView_Files.SelectedCells.Count > 0)
-                {
+            if (this.comboBox_Compression.Focused) {
+                if (this.dataGridView_Files.SelectedCells.Count > 0) {
                     SHP_TS_EncodingFormat f = (SHP_TS_EncodingFormat)this.comboBox_Compression.SelectedIndex;
                     SHP_TS_BitFlags b = GetBitField();
                     foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
@@ -400,15 +415,11 @@ namespace ImageShaper
             }
         }
 
-        private void SetBitField(SHP_TS_BitFlags bits, SHP_TS_EncodingFormat compression)
-        {
-            for (byte i = 0; i < this.dataGridView_BitFields.Rows[0].Cells.Count; i++)
-            {
+        private void SetBitField(SHP_TS_BitFlags bits, SHP_TS_EncodingFormat compression) {
+            for (byte i = 0; i < this.dataGridView_BitFields.Rows[0].Cells.Count; i++) {
                 this.dataGridView_BitFields.Rows[0].Cells[i].Value = BitHelper.GetBit((int)bits, i);
-                if (i == 1)
-                {
-                    switch (compression)
-                    {
+                if (i == 1) {
+                    switch (compression) {
                         case SHP_TS_EncodingFormat.Undefined: this.dataGridView_BitFields.Rows[0].Cells[i].Value = "?"; break;
                         case SHP_TS_EncodingFormat.Uncompressed: this.dataGridView_BitFields.Rows[0].Cells[i].Value = "U"; break;
                         case SHP_TS_EncodingFormat.RLE_Zero: this.dataGridView_BitFields.Rows[0].Cells[i].Value = "R"; break;
@@ -420,11 +431,9 @@ namespace ImageShaper
             SHP_TS_BitFlags f = GetBitField();
         }
 
-        private SHP_TS_BitFlags GetBitField()
-        {
+        private SHP_TS_BitFlags GetBitField() {
             int t = 0;
-            for (byte i = 0; i < this.dataGridView_BitFields.Rows[0].Cells.Count; i++)
-            {
+            for (byte i = 0; i < this.dataGridView_BitFields.Rows[0].Cells.Count; i++) {
 
                 if ((i != 1) && ((bool)this.dataGridView_BitFields.Rows[0].Cells[i].Value))
                     t += (int)Math.Pow((double)2, (double)i);
@@ -432,21 +441,17 @@ namespace ImageShaper
             return (SHP_TS_BitFlags)t;
         }
 
-        void dataGridView_BitFields_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
+        void dataGridView_BitFields_CellClick(object sender, DataGridViewCellEventArgs e) {
             DataGridViewCell c = dataGridView_BitFields[e.ColumnIndex, e.RowIndex];
-            if (!dataGridView_BitFields.Columns[e.ColumnIndex].ReadOnly)
-            {
+            if (!dataGridView_BitFields.Columns[e.ColumnIndex].ReadOnly) {
                 if (c.Value == null)
                     c.Value = true;
                 else
                     c.Value = !(bool)c.Value;
                 dataGridView_BitFields.EndEdit();
             }
-            if (this.dataGridView_BitFields.Focused)
-            {
-                if (this.dataGridView_Files.SelectedCells.Count > 0)
-                {
+            if (this.dataGridView_BitFields.Focused) {
+                if (this.dataGridView_Files.SelectedCells.Count > 0) {
                     SHP_TS_BitFlags b = GetBitField();
                     foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
                         if (cell.Value != null)
@@ -456,8 +461,7 @@ namespace ImageShaper
             }
         }
 
-        void dataGridView_BitFields_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
-        {
+        void dataGridView_BitFields_CellPainting(object sender, DataGridViewCellPaintingEventArgs e) {
             //e.PaintBackground(e.CellBounds, true);
             if (e.ColumnIndex != 1)
                 e.Graphics.FillRectangle(Brushes.White, e.CellBounds);
@@ -465,29 +469,24 @@ namespace ImageShaper
                 e.Graphics.FillRectangle(Brushes.Gray, e.CellBounds);
             e.Graphics.DrawRectangle(Pens.Black, new Rectangle(new Point(e.CellBounds.X, e.CellBounds.Y), new Size(e.CellBounds.Width - 1, e.CellBounds.Height - 1)));
             Point center = new Point(e.CellBounds.X + e.CellBounds.Width / 2 - 1, e.CellBounds.Y + e.CellBounds.Height / 2 + 1);
-            if (e.ColumnIndex == 1)
-            {
-                
-                switch (e.Value.ToString())
-                {
-                    case "!":
-                        {
+            if (e.ColumnIndex == 1) {
+
+                switch (e.Value.ToString()) {
+                    case "!": {
                             for (int i = 0; i < 5; i++)
-                                e.Graphics.DrawLines(Pens.Black, new Point[] { 
-                                    new Point(center.X + 3+i, center.Y - 6), 
-                                    new Point(center.X - 3+i, center.Y), 
+                                e.Graphics.DrawLines(Pens.Black, new Point[] {
+                                    new Point(center.X + 3+i, center.Y - 6),
+                                    new Point(center.X - 3+i, center.Y),
                                     new Point(center.X + 3+i, center.Y + 6) });
                             break;
                         }
-                    case "R":
-                        {
+                    case "R": {
                             //check mark
                             for (int i = 0; i < 5; i++)
                                 e.Graphics.DrawLines(Pens.Black, new Point[] { new Point(center.X - 3, center.Y - 3 + i), new Point(center.X, center.Y + i), new Point(center.X + 6, center.Y - 6 + i) });
                             break;
                         }
-                    case "?":
-                        {
+                    case "?": {
                             Font f = new Font(this.dataGridView_BitFields.Font.FontFamily, 14, FontStyle.Bold);
                             SizeF s = e.Graphics.MeasureString("?", f);
                             e.Graphics.DrawString("?", f, Brushes.Black, new Point(center.X - (int)s.Width / 2, center.Y - 1 - (int)s.Height / 2));
@@ -495,24 +494,20 @@ namespace ImageShaper
                         }
                     default: break;
                 }
-            }
-            else
+            } else
                 if ((bool)e.FormattedValue)
-                    for (int i = 0; i < 5; i++)
-                        e.Graphics.DrawLines(Pens.Black, new Point[] { new Point(center.X - 3, center.Y - 3 + i), new Point(center.X, center.Y + i), new Point(center.X + 6, center.Y - 6 + i) });
-                //ControlPaint.DrawCheckBox(e.Graphics, e.CellBounds.X - 1, e.CellBounds.Y - 1, e.CellBounds.Width + 2, e.CellBounds.Height + 2, (bool)e.FormattedValue ? ButtonState.Checked | ButtonState.Flat : ButtonState.Normal | ButtonState.Flat);
+                for (int i = 0; i < 5; i++)
+                    e.Graphics.DrawLines(Pens.Black, new Point[] { new Point(center.X - 3, center.Y - 3 + i), new Point(center.X, center.Y + i), new Point(center.X + 6, center.Y - 6 + i) });
+            //ControlPaint.DrawCheckBox(e.Graphics, e.CellBounds.X - 1, e.CellBounds.Y - 1, e.CellBounds.Width + 2, e.CellBounds.Height + 2, (bool)e.FormattedValue ? ButtonState.Checked | ButtonState.Flat : ButtonState.Normal | ButtonState.Flat);
             e.Handled = true;
         }
         #endregion
 
         #region instantly applied changes to selected cells
-        private void checkBox_RadarColorAverage_CheckedChanged(object sender, EventArgs e)
-        {
+        private void checkBox_RadarColorAverage_CheckedChanged(object sender, EventArgs e) {
             this.button_RadarColor.Enabled = !this.checkBox_RadarColorAverage.Checked;
-            if (this.checkBox_RadarColorAverage.Focused)
-            {
-                if (this.dataGridView_Files.SelectedCells.Count > 0)
-                {
+            if (this.checkBox_RadarColorAverage.Focused) {
+                if (this.dataGridView_Files.SelectedCells.Count > 0) {
                     foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
                         if (cell.Value != null)
                             ((CImageFile)cell.Value).RadarColorAverage = this.checkBox_RadarColorAverage.Checked;
@@ -520,20 +515,17 @@ namespace ImageShaper
             }
         }
 
-        private void button_RadarColor_Click(object sender, EventArgs e)
-        {
+        private void button_RadarColor_Click(object sender, EventArgs e) {
             ColorDialog cd = new ColorDialog();
             cd.Color = (Color)this.button_RadarColor.Tag;
             cd.AllowFullOpen = true;
             cd.AnyColor = true;
             cd.FullOpen = true;
-            if (cd.ShowDialog() == DialogResult.OK)
-            {
+            if (cd.ShowDialog() == DialogResult.OK) {
                 this.button_RadarColor.Tag = cd.Color;
                 this.button_RadarColor.Text = Cinimanager.ColorToStr(cd.Color, true);
 
-                if (this.dataGridView_Files.SelectedCells.Count > 0)
-                {
+                if (this.dataGridView_Files.SelectedCells.Count > 0) {
                     foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
                         if (cell.Value != null)
                             ((CImageFile)cell.Value).RadarColor = cd.Color;
@@ -541,27 +533,23 @@ namespace ImageShaper
             }
         }
 
-        private void checkBox_OptimizeCanvas_CheckedChanged(object sender, EventArgs e)
-        {
+        private void checkBox_OptimizeCanvas_CheckedChanged(object sender, EventArgs e) {
             this.checkBox_KeepCentered.Enabled = this.checkBox_OptimizeCanvas.Checked;
             if (this.checkBox_OptimizeCanvas.Focused)
                 this.checkBox_KeepCentered.Checked = this.checkBox_OptimizeCanvas.Checked;
         }
 
-        private void button_CustomBackgroundColor_Click(object sender, EventArgs e)
-        {
+        private void button_CustomBackgroundColor_Click(object sender, EventArgs e) {
             ColorDialog cd = new ColorDialog();
             cd.Color = (Color)this.button_CustomBackgroundColor.Tag;
             cd.AllowFullOpen = true;
             cd.AnyColor = true;
             cd.FullOpen = true;
-            if (cd.ShowDialog() == DialogResult.OK)
-            {
+            if (cd.ShowDialog() == DialogResult.OK) {
                 this.button_CustomBackgroundColor.Text = Cinimanager.ColorToStr(cd.Color, true);
                 this.button_CustomBackgroundColor.Tag = cd.Color;
 
-                if (this.dataGridView_Files.SelectedCells.Count > 0)
-                {
+                if (this.dataGridView_Files.SelectedCells.Count > 0) {
                     foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
                         if (cell.Value != null)
                             ((CImageFile)cell.Value).CustomBackgroundColor = cd.Color;
@@ -569,13 +557,10 @@ namespace ImageShaper
             }
         }
 
-        private void checkBox_UseCustomBackgroundColor_CheckedChanged(object sender, EventArgs e)
-        {
+        private void checkBox_UseCustomBackgroundColor_CheckedChanged(object sender, EventArgs e) {
             this.button_CustomBackgroundColor.Enabled = this.checkBox_UseCustomBackgroundColor.Checked;
-            if (this.checkBox_UseCustomBackgroundColor.Focused)
-            {
-                if (this.dataGridView_Files.SelectedCells.Count > 0)
-                {
+            if (this.checkBox_UseCustomBackgroundColor.Focused) {
+                if (this.dataGridView_Files.SelectedCells.Count > 0) {
                     foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
                         if (cell.Value != null)
                             ((CImageFile)cell.Value).UseCustomBackgroundColor = this.checkBox_UseCustomBackgroundColor.Checked;
@@ -583,12 +568,9 @@ namespace ImageShaper
             }
         }
 
-        private void checkBox_CombineTransparency_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.checkBox_CombineTransparency.Focused)
-            {
-                if (this.dataGridView_Files.SelectedCells.Count > 0)
-                {
+        private void checkBox_CombineTransparency_CheckedChanged(object sender, EventArgs e) {
+            if (this.checkBox_CombineTransparency.Focused) {
+                if (this.dataGridView_Files.SelectedCells.Count > 0) {
                     foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
                         if (cell.Value != null)
                             ((CImageFile)cell.Value).CombineTransparentPixel = this.checkBox_CombineTransparency.Checked;
@@ -601,16 +583,13 @@ namespace ImageShaper
 
         bool ShowPreview = false;
         Form_DockPreview form_Preview;
-        private void showHidePreviewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
+        private void showHidePreviewToolStripMenuItem_Click(object sender, EventArgs e) {
             ShowPreview = !ShowPreview;
             ShowHidePreview();
         }
 
-        private void ShowHidePreview()
-        {
-            if (ShowPreview)
-            {
+        private void ShowHidePreview() {
+            if (ShowPreview) {
                 this.showHidePreviewToolStripMenuItem.Text = "Hide Preview";
                 form_Preview = new Form_DockPreview();
                 form_Preview.StartPosition = FormStartPosition.Manual;
@@ -619,12 +598,9 @@ namespace ImageShaper
 
                 UpdatePreview();
                 form_Preview.Show();
-            }
-            else
-            {
+            } else {
                 this.showHidePreviewToolStripMenuItem.Text = "Show Preview";
-                if (form_Preview != null)
-                {
+                if (form_Preview != null) {
                     form_Preview.Close();
                     form_Preview.uC_ImageCanvas1.PixelColorChanged -= uC_ImageCanvas1_PixelColorChanged;
                     form_Preview = null;
@@ -632,49 +608,40 @@ namespace ImageShaper
             }
         }
 
-        void uC_ImageCanvas1_PixelColorChanged(object sender, UC_ImageCanvas.ImageCanvasDataEventArgs e)
-        {
+        void uC_ImageCanvas1_PixelColorChanged(object sender, UC_ImageCanvas.ImageCanvasDataEventArgs e) {
             this.uC_Palette1.PaletteSelectedColor = e.Color;
         }
 
         #region datagrid control
-        void dataGridView1_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
-                {
+        void dataGridView1_KeyUp(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Delete) {
+                foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells) {
                     if ((cell.ColumnIndex < this.dataGridView_Files.ColumnCount) && (cell.ColumnIndex >= 0) &&
-                        (cell.RowIndex < this.dataGridView_Files.RowCount) && (cell.RowIndex >= 0))
-                    {
+                        (cell.RowIndex < this.dataGridView_Files.RowCount) && (cell.RowIndex >= 0)) {
                         cell.Value = null;
                         if (IsEmptyRow(this.dataGridView_Files.Rows[cell.RowIndex])) this.dataGridView_Files.Rows.RemoveAt(cell.RowIndex);
                     }
                 }
                 AddLastEmptyRow();
             }
-            if ((e.Control) && (e.KeyCode == Keys.V))
-            {
+            if ((e.Control) && (e.KeyCode == Keys.V)) {
                 LoadFromClipboard();
             }
             UpdatePreview();
         }
 
-        private bool IsEmptyRow(DataGridViewRow row)
-        {
+        private bool IsEmptyRow(DataGridViewRow row) {
             if (row == null) return true;
             for (int i = 0; i < row.Cells.Count; i++)
                 if (row.Cells[i].Value != null) return false;
             return true;
         }
 
-        void dataGridView1_DragEnter(object sender, DragEventArgs e)
-        {
+        void dataGridView1_DragEnter(object sender, DragEventArgs e) {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
         }
 
-        void dataGridView1_DragDrop(object sender, DragEventArgs e)
-        {
+        void dataGridView1_DragDrop(object sender, DragEventArgs e) {
             Point clientPoint = dataGridView_Files.PointToClient(new Point(e.X, e.Y));
             int rowindex = this.dataGridView_Files.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
             int columnindex = this.dataGridView_Files.HitTest(clientPoint.X, this.dataGridView_Files.ColumnHeadersHeight + 5).ColumnIndex;
@@ -686,8 +653,7 @@ namespace ImageShaper
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             if (files != null)
                 AddFilesToDataGrid(files, columnindex, rowindex);
-            else
-            {
+            else {
                 RemoveLastEmptyRow();
                 //d&d selected cells
                 //only when target cell is empty, the value is pasted, otherwise a new row inserted/added
@@ -697,15 +663,13 @@ namespace ImageShaper
 
                 int rowdelta = int.MaxValue;
                 int coldelta = int.MaxValue;
-                for (int i = 0; i < dgvscc.Count; i++)
-                {
+                for (int i = 0; i < dgvscc.Count; i++) {
                     if (dgvscc[i].RowIndex < rowdelta) rowdelta = dgvscc[i].RowIndex;
                     if (dgvscc[i].ColumnIndex < coldelta) coldelta = dgvscc[i].ColumnIndex;
                 }
 
                 if (rowindex == -1) rowindex = this.dataGridView_Files.RowCount;
-                for (int i = 0; i < dgvscc.Count; i++)
-                {
+                for (int i = 0; i < dgvscc.Count; i++) {
                     int cellcolindex = columnindex + (dgvscc[i].ColumnIndex - coldelta);
                     int cellrowindex = rowindex + (dgvscc[i].RowIndex - rowdelta);
 
@@ -713,8 +677,7 @@ namespace ImageShaper
 
                     if ((cellrowindex < this.dataGridView_Files.RowCount) && (this.dataGridView_Files[cellcolindex, cellrowindex].Value == null))
                         this.dataGridView_Files[cellcolindex, cellrowindex].Value = dgvscc[i].Value;
-                    else
-                    {
+                    else {
                         DataGridViewRow row = (DataGridViewRow)this.dataGridView_Files.RowTemplate.Clone();
                         object[] values = new object[this.dataGridView_Files.ColumnCount];
                         values[cellcolindex] = dgvscc[i].Value;
@@ -730,17 +693,14 @@ namespace ImageShaper
             }
         }
 
-        void dataGridView_Files_DragOver(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Copy;  
+        void dataGridView_Files_DragOver(object sender, DragEventArgs e) {
+            e.Effect = DragDropEffects.Copy;
         }
         private Rectangle dragBoxFromMouseDown;
         //necessary, since the DataGridViewCell changes its properties as soon as something is changed in the DGV
         //e.g. the first pasted cell will change the rowindex of all other selected cells and thus mess up the pasting operation
-        internal struct DGVCell
-        {
-            public DGVCell(DataGridViewCell cell)
-            {
+        internal struct DGVCell {
+            public DGVCell(DataGridViewCell cell) {
                 this.Value = cell.Value;
                 this.ColumnIndex = cell.ColumnIndex;
                 this.RowIndex = cell.RowIndex;
@@ -749,32 +709,25 @@ namespace ImageShaper
             public int RowIndex;
             public object Value;
         }
-        private void dataGridView_Files_MouseDown(object sender, MouseEventArgs e)
-        {
+        private void dataGridView_Files_MouseDown(object sender, MouseEventArgs e) {
             // Get the index of the item the mouse is below.
             int rowindex = this.dataGridView_Files.HitTest(e.X, e.Y).RowIndex;
             int colindex = this.dataGridView_Files.HitTest(e.X, e.Y).ColumnIndex;
 
-            if (rowindex != -1)
-            {
+            if (rowindex != -1) {
                 //only by moving outside the cell, the d&d operation starts
                 //the default SystemInformation.DragSize is way too tiny and errorprone. just 4 pixel sucks for fast working people.
                 dragBoxFromMouseDown = this.dataGridView_Files.GetCellDisplayRectangle(colindex, rowindex, true);
-            }
-            else
+            } else
                 // Reset the rectangle if the mouse is not over an item in the ListBox.
                 dragBoxFromMouseDown = Rectangle.Empty;
         }
-        void dataGridView_Files_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                if (dragBoxFromMouseDown != Rectangle.Empty && !dragBoxFromMouseDown.Contains(e.X, e.Y))
-                {
+        void dataGridView_Files_MouseMove(object sender, MouseEventArgs e) {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+                if (dragBoxFromMouseDown != Rectangle.Empty && !dragBoxFromMouseDown.Contains(e.X, e.Y)) {
                     List<DGVCell> cells = new List<DGVCell>();
                     for (int c = this.dataGridView_Files.ColumnCount - 1; c >= 0; c--)
-                        for (int i = 0; i < this.dataGridView_Files.SelectedCells.Count; i++)
-                        {
+                        for (int i = 0; i < this.dataGridView_Files.SelectedCells.Count; i++) {
                             DGVCell cell = new DGVCell(this.dataGridView_Files.SelectedCells[i]);
                             if ((cell.Value != null) && (cell.ColumnIndex == c))
                                 cells.Insert(0, cell);
@@ -785,24 +738,20 @@ namespace ImageShaper
         }
 
         List<DGVCell> Cells2Copy;
-        void DataGridCell_Copy(object sender, EventArgs e)
-        {
+        void DataGridCell_Copy(object sender, EventArgs e) {
             Cells2Copy = new List<DGVCell>();
             for (int c = this.dataGridView_Files.ColumnCount - 1; c >= 0; c--)
-                for (int i = 0; i < this.dataGridView_Files.SelectedCells.Count; i++)
-                {
+                for (int i = 0; i < this.dataGridView_Files.SelectedCells.Count; i++) {
                     DGVCell cell = new DGVCell(this.dataGridView_Files.SelectedCells[i]);
                     if ((cell.Value != null) && (cell.ColumnIndex == c))
                         Cells2Copy.Insert(0, cell);
                 }
         }
 
-        void DataGridCell_Cut(object sender, EventArgs e)
-        {
+        void DataGridCell_Cut(object sender, EventArgs e) {
             Cells2Copy = new List<DGVCell>();
             for (int c = this.dataGridView_Files.ColumnCount - 1; c >= 0; c--)
-                for (int i = 0; i < this.dataGridView_Files.SelectedCells.Count; i++)
-                {
+                for (int i = 0; i < this.dataGridView_Files.SelectedCells.Count; i++) {
                     DGVCell cell = new DGVCell(this.dataGridView_Files.SelectedCells[i]);
                     if ((cell.Value != null) && (cell.ColumnIndex == c))
                         Cells2Copy.Insert(0, cell);
@@ -812,24 +761,20 @@ namespace ImageShaper
                 cell.Value = null;
         }
 
-        void DataGridCell_Paste(object sender, EventArgs e)
-        {
-            if ((targetCell.X >= 0) && (targetCell.Y >= 0))
-            {
+        void DataGridCell_Paste(object sender, EventArgs e) {
+            if ((targetCell.X >= 0) && (targetCell.Y >= 0)) {
                 int rowindex = targetCell.Y;
                 int columnindex = targetCell.X;
 
                 int rowdelta = int.MaxValue;
                 int coldelta = int.MaxValue;
-                for (int i = 0; i < Cells2Copy.Count; i++)
-                {
+                for (int i = 0; i < Cells2Copy.Count; i++) {
                     if (Cells2Copy[i].RowIndex < rowdelta) rowdelta = Cells2Copy[i].RowIndex;
                     if (Cells2Copy[i].ColumnIndex < coldelta) coldelta = Cells2Copy[i].ColumnIndex;
                 }
 
                 if (rowindex == -1) rowindex = this.dataGridView_Files.RowCount;
-                for (int i = 0; i < Cells2Copy.Count; i++)
-                {
+                for (int i = 0; i < Cells2Copy.Count; i++) {
                     int cellcolindex = columnindex + (Cells2Copy[i].ColumnIndex - coldelta);
                     int cellrowindex = rowindex + (Cells2Copy[i].RowIndex - rowdelta);
 
@@ -837,8 +782,7 @@ namespace ImageShaper
 
                     if ((cellrowindex < this.dataGridView_Files.RowCount) && (this.dataGridView_Files[cellcolindex, cellrowindex].Value == null))
                         this.dataGridView_Files[cellcolindex, cellrowindex].Value = Cells2Copy[i].Value;
-                    else
-                    {
+                    else {
                         DataGridViewRow row = (DataGridViewRow)this.dataGridView_Files.RowTemplate.Clone();
                         object[] values = new object[this.dataGridView_Files.ColumnCount];
                         values[cellcolindex] = Cells2Copy[i].Value;
@@ -858,40 +802,33 @@ namespace ImageShaper
         public static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
         private const int WM_SETREDRAW = 11;
         BackgroundWorker LoadFilesBW;
-        private void AddFilesToDataGrid(string[] filenames, int columnindex, int rowindex)
-        {
-            if ((LoadFilesBW != null) && (LoadFilesBW.IsBusy))
-            {
+        private void AddFilesToDataGrid(string[] filenames, int columnindex, int rowindex) {
+            if ((LoadFilesBW != null) && (LoadFilesBW.IsBusy)) {
                 if (MessageBox.Show("File loading in progress!\nDo you want to abort that process and instead add the new files?", "File loading in progress", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     LoadFilesBW.CancelAsync();
                 else
                     return;
             }
 
-            if (this.dataGridView_Files.SelectedCells.Count > 1)
-            {
+            if (this.dataGridView_Files.SelectedCells.Count > 1) {
                 int SelectedCellsInOneColumn = 0;
                 int columnnr = -1;
                 int toprowindex = int.MaxValue;
-                foreach (DataGridViewCell c in this.dataGridView_Files.SelectedCells)
-                {
+                foreach (DataGridViewCell c in this.dataGridView_Files.SelectedCells) {
                     SelectedCellsInOneColumn++;
                     if (c.RowIndex < toprowindex) toprowindex = c.RowIndex;
                     if (columnnr == -1)
                         columnnr = c.ColumnIndex;
                     else
-                        if (columnnr != c.ColumnIndex)
-                        {
-                            SelectedCellsInOneColumn = -1;
-                            break;
-                        }
+                        if (columnnr != c.ColumnIndex) {
+                        SelectedCellsInOneColumn = -1;
+                        break;
+                    }
                 }
                 //don't do anything if the user selected cells across multiple columns
                 //this works for cells in a single column only!
-                if ((SelectedCellsInOneColumn > 0) && (SelectedCellsInOneColumn > filenames.Length))
-                {
-                    if (MessageBox.Show("Do you wish to duplicate the " + filenames.Length.ToString() + " file(s) to fill the " + SelectedCellsInOneColumn.ToString() + " selected cells?", "Duplicate files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
+                if ((SelectedCellsInOneColumn > 0) && (SelectedCellsInOneColumn > filenames.Length)) {
+                    if (MessageBox.Show("Do you wish to duplicate the " + filenames.Length.ToString() + " file(s) to fill the " + SelectedCellsInOneColumn.ToString() + " selected cells?", "Duplicate files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                         string[] dupfilenames = new string[SelectedCellsInOneColumn];
                         for (int i = 0; i < dupfilenames.Length; i++)
                             dupfilenames[i] = filenames[i % filenames.Length];
@@ -920,50 +857,41 @@ namespace ImageShaper
             bool checkBox_CombineTransparency = this.checkBox_CombineTransparency.Checked;
 
             LoadFilesBW = new BackgroundWorker();
-            LoadFilesBW.DoWork += (w_s, w_e) =>
-            {
+            LoadFilesBW.DoWork += (w_s, w_e) => {
                 BackgroundWorker worker = (BackgroundWorker)w_s;
                 CFiles2Load job = w_e.Argument as CFiles2Load;
                 DataGridView tmpdgv = job.dgv;
                 w_e.Result = "Loading-Files-Worker stopped unfinished";
                 int SHPFrameCount = 0;
 
-                for (int f = 0; f < job.files.Length; f++)
-                {
+                for (int f = 0; f < job.files.Length; f++) {
                     //System.Threading.Thread.Sleep(1000);
                     string file = job.files[f];
                     if (!worker.CancellationPending)
                         worker.ReportProgress(f, "");
-                    else
-                    {
+                    else {
                         w_e.Cancel = true;
                         return;
                     }
 
                     bool IsSHP = false;
                     //ignore unsupported files by testing each file if we can use it as Bitmap
-                    try
-                    {
+                    try {
                         Bitmap test = (Bitmap)Image.FromFile(file);
-                    }
-                    catch
-                    {
+                    } catch {
                         IsSHP = CSHaPer.IsSHP(file);
                         //if its no image and no SHP, skip this
                         if (!IsSHP)
                             continue;
                     }
 
-                    if (IsSHP)
-                    {
+                    if (IsSHP) {
                         CImageFile[] SHPFrames = CSHaPer.GetFrames(file, palindex);
                         DataGridViewRow row;
-                        for (int shp_i = 0; shp_i < SHPFrames.Length; shp_i++)
-                        {
+                        for (int shp_i = 0; shp_i < SHPFrames.Length; shp_i++) {
                             CImageFile SHPFrame = SHPFrames[shp_i];
                             SHPFrame.RadarColorAverage = checkBox_RadarColorAverage;
-                            if ((rowindex == -1) || ((rowindex >= 0) && (rowindex + (f + SHPFrameCount) + shp_i >= tmpdgv.Rows.Count)))
-                            {
+                            if ((rowindex == -1) || ((rowindex >= 0) && (rowindex + (f + SHPFrameCount) + shp_i >= tmpdgv.Rows.Count))) {
                                 row = (DataGridViewRow)tmpdgv.RowTemplate.Clone();
                                 object[] values = new object[3];
                                 for (int i = 0; i < values.Length; i++)
@@ -972,17 +900,13 @@ namespace ImageShaper
 
                                 row.CreateCells(tmpdgv, values);
                                 tmpdgv.Rows.Add(row);
-                            }
-                            else
-                            {
+                            } else {
                                 row = tmpdgv.Rows[rowindex + (f + SHPFrameCount) + shp_i];
                                 row.Cells[columnindex].Value = SHPFrame;
                             }
                         }
                         SHPFrameCount += SHPFrames.Length - 1;//f for the files counter already is 1 for the SHP itself. e.g. for an SHP with only 1 frame, SHPFrameCount doesn't need to be raised
-                    }
-                    else
-                    {
+                    } else {
                         DataGridViewRow row;
                         CImageFile cif = new CImageFile(file, palindex, format);
                         cif.UseCustomBackgroundColor = checkBox_UseCustomBackgroundColor;
@@ -990,8 +914,7 @@ namespace ImageShaper
                         cif.RadarColorAverage = checkBox_RadarColorAverage;
                         cif.CombineTransparentPixel = checkBox_CombineTransparency;
                         cif.BitFlags = bitflags;
-                        if ((rowindex == -1) || ((rowindex >= 0) && (rowindex + (f + SHPFrameCount) >= tmpdgv.Rows.Count)))
-                        {
+                        if ((rowindex == -1) || ((rowindex >= 0) && (rowindex + (f + SHPFrameCount) >= tmpdgv.Rows.Count))) {
                             row = (DataGridViewRow)tmpdgv.RowTemplate.Clone();
                             object[] values = new object[3];
                             for (int i = 0; i < values.Length; i++)
@@ -1000,9 +923,7 @@ namespace ImageShaper
 
                             row.CreateCells(tmpdgv, values);
                             tmpdgv.Rows.Add(row);
-                        }
-                        else
-                        {
+                        } else {
                             row = tmpdgv.Rows[rowindex + (f + SHPFrameCount)];
                             row.Cells[columnindex].Value = cif;
                         }
@@ -1012,10 +933,8 @@ namespace ImageShaper
                 w_e.Result = tmpdgv;
             };
 
-            LoadFilesBW.ProgressChanged += (w_s, w_e) =>
-            {
-                if (w_e.ProgressPercentage != -1)
-                {
+            LoadFilesBW.ProgressChanged += (w_s, w_e) => {
+                if (w_e.ProgressPercentage != -1) {
                     this.progressBar1.Value = w_e.ProgressPercentage;
                     if ((w_e.UserState != null) && (w_e.UserState.ToString() != ""))
                         this.richTextBox_Reports.SelectedText = w_e.UserState.ToString();
@@ -1023,23 +942,17 @@ namespace ImageShaper
             };
 
             //throw new Exception("this.dataGridView_Files.Rows.Clear(); is shit. add only changes so the selected cells and the current scrollbar location are kept");
-            LoadFilesBW.RunWorkerCompleted += (w_s, w_e) =>
-            {
-                if ((!w_e.Cancelled) && (w_e.Error == null))
-                {
+            LoadFilesBW.RunWorkerCompleted += (w_s, w_e) => {
+                if ((!w_e.Cancelled) && (w_e.Error == null)) {
                     SendMessage(this.dataGridView_Files.Handle, WM_SETREDRAW, false, 0);
                     //this.dataGridView_Files.Rows.Clear();
                     DataGridView wdgv = (DataGridView)w_e.Result;
                     DataGridViewRow row = new DataGridViewRow();
-                    for (int i = 0; i < wdgv.Rows.Count; i++)
-                    {
-                        if (i < this.dataGridView_Files.Rows.Count)
-                        {
+                    for (int i = 0; i < wdgv.Rows.Count; i++) {
+                        if (i < this.dataGridView_Files.Rows.Count) {
                             for (int c = 0; c < wdgv.Rows[i].Cells.Count; c++)
                                 this.dataGridView_Files.Rows[i].Cells[c].Value = wdgv.Rows[i].Cells[c].Value;
-                        }
-                        else
-                        {
+                        } else {
                             row = (System.Windows.Forms.DataGridViewRow)wdgv.Rows[i].Clone();
                             for (int c = 0; c < wdgv.Rows[i].Cells.Count; c++)
                                 row.Cells[c].Value = wdgv.Rows[i].Cells[c].Value;
@@ -1054,11 +967,8 @@ namespace ImageShaper
 
                     this.progressBar1.Value = 0;
                     this.richTextBox_Reports.SelectedText = " done." + Environment.NewLine;
-                }
-                else
-                {
-                    if (w_e.Error != null)
-                    {
+                } else {
+                    if (w_e.Error != null) {
                         this.richTextBox_Reports.SelectionColor = Color.Red;
                         this.richTextBox_Reports.SelectedText = "PreviewWorkerError:" + w_e.Error.Message + Environment.NewLine;
                     }
@@ -1076,8 +986,7 @@ namespace ImageShaper
         /// <summary>
         /// synchronous loading for command line file load
         /// </summary>
-        private void AddFilesToDataGridSync(string[] filenames, int columnindex, int rowindex, bool setSHPBits, bool setSHPCompression)
-        {
+        private void AddFilesToDataGridSync(string[] filenames, int columnindex, int rowindex, bool setSHPBits, bool setSHPCompression) {
             int palindex = -1;
             palindex = PaletteManager.GetPaletteIndex(this.uC_Palette1.Palette, false);
 
@@ -1100,26 +1009,21 @@ namespace ImageShaper
 
             SendMessage(this.dataGridView_Files.Handle, WM_SETREDRAW, false, 0);
 
-            for (int f = 0; f < filenames.Length; f++)
-            {
+            for (int f = 0; f < filenames.Length; f++) {
                 string file = filenames[f];
 
                 bool IsSHP = false;
                 //ignore unsupported files by testing each file if we can use it as Bitmap
-                try
-                {
+                try {
                     Bitmap test = (Bitmap)Image.FromFile(file);
-                }
-                catch
-                {
+                } catch {
                     IsSHP = CSHaPer.IsSHP(file);
                     //if its no image and no SHP, skip this
                     if (!IsSHP)
                         continue;
                 }
 
-                if (IsSHP)
-                {
+                if (IsSHP) {
                     CImageFile[] SHPFrames = CSHaPer.GetFrames(file, palindex);
                     DataGridViewRow row;
                     int frameStart = 0;
@@ -1127,11 +1031,9 @@ namespace ImageShaper
 
                     Console.WriteLine("SplitStartFrame = " + SplitStartFrame);
 
-                    if(SplitStartFrame != SplitFrame.Begin)
-                    {
+                    if (SplitStartFrame != SplitFrame.Begin) {
                         Console.WriteLine("in not begin : SplitStartFrame = " + SplitStartFrame);
-                        switch (SplitStartFrame)
-                        {
+                        switch (SplitStartFrame) {
                             case SplitFrame.End:
                                 frameStart = SplitWithShadow ? frameEnd / 2 - 1 : frameEnd - 1;
                                 Console.WriteLine(" frameStart = " + frameStart);
@@ -1142,37 +1044,35 @@ namespace ImageShaper
                         }
                     }
 
-                    if (SplitEndFrame != SplitFrame.End)
-                    {
-                        switch (SplitEndFrame)
-                        {
+                    if (SplitEndFrame != SplitFrame.End) {
+                        switch (SplitEndFrame) {
                             default:
                                 frameEnd = (int)SplitEndFrame;
                                 break;
                         }
                     }
 
-                    for (int shp_i = frameStart; shp_i < frameEnd; shp_i++)
-                    {
+                    Func<int, bool> isLegalFrame = (shp_i) => {
                         //skip such frames
-                        if (( (shp_i - frameStart) % SplitInterval) != 0 ) {
-                            continue;
+                        if (((shp_i - frameStart) % SplitInterval) != 0) {
+                            return false;
                         }
 
-                        if(SplitWithShadow)
-                        {
-                            if(shp_i >= SHPFrames.Length / 2 && shp_i - SHPFrames.Length / 2 < frameStart)
-                            {
-                                continue;
+                        if (SplitWithShadow) {
+                            if (shp_i >= SHPFrames.Length / 2 && shp_i - SHPFrames.Length / 2 < frameStart) {
+                                return false;
                             }
                         }
+                        return true;
+                    };
+
+                    Func<int, int> addFrame = (shp_i) => {
 
                         CImageFile SHPFrame = SHPFrames[shp_i];
                         if (setSHPBits) SHPFrame.BitFlags = bitflags;
                         if (setSHPCompression) SHPFrame.CompressionFormat = compressionformat;
                         SHPFrame.RadarColorAverage = checkBox_RadarColorAverage;
-                        if ((rowindex == -1) || ((rowindex >= 0) && (rowindex + (f + SHPFrameCount) + shp_i >= this.dataGridView_Files.Rows.Count)))
-                        {
+                        if ((rowindex == -1) || ((rowindex >= 0) && (rowindex + (f + SHPFrameCount) + shp_i >= this.dataGridView_Files.Rows.Count))) {
                             row = (DataGridViewRow)this.dataGridView_Files.RowTemplate.Clone();
                             object[] values = new object[3];
                             for (int i = 0; i < values.Length; i++)
@@ -1181,17 +1081,30 @@ namespace ImageShaper
 
                             row.CreateCells(this.dataGridView_Files, values);
                             this.dataGridView_Files.Rows.Add(row);
-                        }
-                        else
-                        {
+                        } else {
                             row = this.dataGridView_Files.Rows[rowindex + (f + SHPFrameCount) + shp_i];
                             row.Cells[columnindex].Value = SHPFrame;
                         }
+                        return 0;
+
+                    };
+
+                    for (int shp_i = frameStart; shp_i < frameEnd; shp_i++) {
+                        if (isLegalFrame(shp_i)) {
+                            addFrame(shp_i);
+                        }
                     }
+                    if (SplitWithShadow && frameEnd < SHPFrames.Length / 2) {
+                        int half = SHPFrames.Length / 2;
+                        for (int shp_shadow_i = frameStart + half; shp_shadow_i < frameEnd + half; ++shp_shadow_i) {
+                            if (isLegalFrame(shp_shadow_i)) {
+                                addFrame(shp_shadow_i);
+                            }
+                        }
+                    }
+
                     SHPFrameCount += SHPFrames.Length - 1;//f for the files counter already is 1 for the SHP itself. e.g. for an SHP with only 1 frame, SHPFrameCount doesn't need to be raised
-                }
-                else
-                {
+                } else {
                     DataGridViewRow row;
                     CImageFile cif = new CImageFile(file, palindex, compressionformat);
                     cif.UseCustomBackgroundColor = checkBox_UseCustomBackgroundColor;
@@ -1199,8 +1112,7 @@ namespace ImageShaper
                     cif.RadarColorAverage = checkBox_RadarColorAverage;
                     cif.CombineTransparentPixel = checkBox_CombineTransparency;
                     cif.BitFlags = bitflags;
-                    if ((rowindex == -1) || ((rowindex >= 0) && (rowindex + (f + SHPFrameCount) >= this.dataGridView_Files.Rows.Count)))
-                    {
+                    if ((rowindex == -1) || ((rowindex >= 0) && (rowindex + (f + SHPFrameCount) >= this.dataGridView_Files.Rows.Count))) {
                         row = (DataGridViewRow)this.dataGridView_Files.RowTemplate.Clone();
                         object[] values = new object[3];
                         for (int i = 0; i < values.Length; i++)
@@ -1209,9 +1121,7 @@ namespace ImageShaper
 
                         row.CreateCells(this.dataGridView_Files, values);
                         this.dataGridView_Files.Rows.Add(row);
-                    }
-                    else
-                    {
+                    } else {
                         row = this.dataGridView_Files.Rows[rowindex + (f + SHPFrameCount)];
                         row.Cells[columnindex].Value = cif;
                     }
@@ -1228,12 +1138,10 @@ namespace ImageShaper
         }
 
         private Point targetCell;
-        void dataGridView1_MouseClick(object sender, MouseEventArgs e)
-        {
+        void dataGridView1_MouseClick(object sender, MouseEventArgs e) {
             targetCell = new Point(-1, -1);
 
-            if (e.Button == MouseButtons.Right)
-            {
+            if (e.Button == MouseButtons.Right) {
                 //Point clientPoint = dataGridView1.PointToClient(new Point(e.X, e.Y));
                 int rowindex = this.dataGridView_Files.HitTest(e.X, e.Y).RowIndex;
                 int columnindex = this.dataGridView_Files.HitTest(e.X, e.Y).ColumnIndex;
@@ -1245,16 +1153,14 @@ namespace ImageShaper
                 UpdatePreview();
         }
 
-        void DataGridCell_LoadImages(object sender, EventArgs e)
-        {
+        void DataGridCell_LoadImages(object sender, EventArgs e) {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Load Images";
             ofd.InitialDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             ofd.FileName = "";
             ofd.Filter = "Image files|*.png;*.bmp;*.shp";
             ofd.Multiselect = true;
-            if (ofd.ShowDialog() != DialogResult.Cancel)
-            {
+            if (ofd.ShowDialog() != DialogResult.Cancel) {
                 int rowindex = targetCell.Y;
                 int columnindex = targetCell.X;
                 if (columnindex == -1) columnindex = 0;
@@ -1262,32 +1168,27 @@ namespace ImageShaper
             }
         }
 
-        void DataGridCell_ReverseOrder(object sender, EventArgs e)
-        {
+        void DataGridCell_ReverseOrder(object sender, EventArgs e) {
             List<DGVCell> Cells2Reverse = new List<DGVCell>();
             for (int c = this.dataGridView_Files.ColumnCount - 1; c >= 0; c--)
-                for (int i = 0; i < this.dataGridView_Files.SelectedCells.Count; i++)
-                {
+                for (int i = 0; i < this.dataGridView_Files.SelectedCells.Count; i++) {
                     DGVCell cell = new DGVCell(this.dataGridView_Files.SelectedCells[i]);
                     if ((cell.Value != null) && (cell.ColumnIndex == c))
                         Cells2Reverse.Insert(0, cell);
                 }
 
-            for (int i = 0; i < Cells2Reverse.Count; i++)
-            {
+            for (int i = 0; i < Cells2Reverse.Count; i++) {
                 int ii = Cells2Reverse.Count - 1 - i;
                 this.dataGridView_Files[Cells2Reverse[ii].ColumnIndex, Cells2Reverse[ii].RowIndex].Value = Cells2Reverse[i].Value;
             }
         }
 
-        void DataGridCell_SetPalette(object sender, EventArgs e)
-        {
-            if (this.dataGridView_Files.SelectedCells.Count > 0)
-            {
+        void DataGridCell_SetPalette(object sender, EventArgs e) {
+            if (this.dataGridView_Files.SelectedCells.Count > 0) {
                 int palindex = -1;
                 palindex = PaletteManager.GetPaletteIndex(this.uC_Palette1.Palette, false);
 
-                
+
                 foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
                     if (cell.Value != null)
                         ((CImageFile)cell.Value).PaletteIndex = palindex;
@@ -1295,29 +1196,23 @@ namespace ImageShaper
                 UpdatePreview();
             }
         }
-        void DataGridCell_SetCompression(object sender, EventArgs e)
-        {
-            if (this.dataGridView_Files.SelectedCells.Count > 0)
-            {
+        void DataGridCell_SetCompression(object sender, EventArgs e) {
+            if (this.dataGridView_Files.SelectedCells.Count > 0) {
                 SHP_TS_EncodingFormat f = (SHP_TS_EncodingFormat)this.comboBox_Compression.SelectedIndex;
                 SHP_TS_BitFlags b = GetBitField();
                 foreach (DataGridViewCell cell in this.dataGridView_Files.SelectedCells)
-                    if (cell.Value != null)
-                    {
+                    if (cell.Value != null) {
                         ((CImageFile)cell.Value).CompressionFormat = f;
                         ((CImageFile)cell.Value).BitFlags = b;
                     }
                 this.dataGridView_Files.Invalidate();
             }
         }
-        void DataGridCell_LoadFromClipboard(object sender, EventArgs e)
-        {
+        void DataGridCell_LoadFromClipboard(object sender, EventArgs e) {
             LoadFromClipboard();
         }
-        private void LoadFromClipboard()
-        {
-            try
-            {
+        private void LoadFromClipboard() {
+            try {
                 Image img = Clipboard.GetImage();
                 if (img == null) return;
                 string clipboardfilename = "tmpclipb" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
@@ -1328,9 +1223,7 @@ namespace ImageShaper
                 int columnindex = targetCell.X;
                 if (columnindex == -1) columnindex = 0;
                 AddFilesToDataGrid(new string[] { filename }, columnindex, rowindex);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 this.richTextBox_Reports.SelectionColor = Color.Red;
                 this.richTextBox_Reports.SelectedText = ex.Message;
             }
@@ -1338,9 +1231,80 @@ namespace ImageShaper
 
         #endregion
 
-        private void button_Start_Click(object sender, EventArgs e)
-        {
+        private void button_Start_Click(object sender, EventArgs e) {
             CreatSHP(false);
+        }
+
+        private unsafe void AdapatCanvasAdjustment(CImageResult input, RectangleOffset canvasOffset) {
+            if (canvasOffset.IsEmpty) {
+                return;
+            }
+
+            if (canvasOffset.DeltaWidth != 0 || canvasOffset.DeltaHeight != 0) {
+                var oldBmp = input.bmp;
+                var oldData = oldBmp.LockBits(new Rectangle(0, 0, oldBmp.Width, oldBmp.Height), ImageLockMode.ReadWrite, oldBmp.PixelFormat);
+                int byteCount = oldData.Stride * oldData.Height;
+                byte[] oldBuffer = new byte[byteCount];
+                System.Runtime.InteropServices.Marshal.Copy(oldData.Scan0, oldBuffer, 0, byteCount);
+                var newWidth = oldBmp.Width + canvasOffset.DeltaWidth;
+                var newHeight = oldBmp.Height + canvasOffset.DeltaHeight;
+                Bitmap resizedImg = new Bitmap(newWidth, newHeight, oldBmp.PixelFormat);
+                var data = resizedImg.LockBits(new Rectangle(0, 0, newWidth, newHeight), ImageLockMode.ReadWrite, resizedImg.PixelFormat);
+                //Program.CopyMemory(data.Scan0, oldData.Scan0, (uint)(oldBmp.Width * oldBmp.Height));
+                System.Runtime.InteropServices.Marshal.Copy(oldBuffer, 0, data.Scan0, byteCount); 
+                //Graphics gfx = Graphics.FromImage(resizedImg);
+                //gfx.DrawImage(oldBmp, 0, 0);
+                input.bmp = resizedImg;
+            }
+
+            MoveImage(new Point(canvasOffset.XShift, canvasOffset.YShift), input.BackgroundColor, input.bmp);
+        }
+
+        private unsafe void MoveImage(Point offset, Color backgroundColor, Bitmap curBitmap) {
+            if (curBitmap != null) {
+
+                Rectangle rect = new Rectangle(0, 0, curBitmap.Width, curBitmap.Height);
+                BitmapData bmpData = curBitmap.LockBits(rect, ImageLockMode.ReadWrite, curBitmap.PixelFormat);
+                IntPtr ptr = bmpData.Scan0;
+                int byteCount = bmpData.Stride * bmpData.Height;
+                byte* grayValues = (byte*)ptr;
+
+                //shift vector
+                int offset_x = offset.X;
+                int offset_y = offset.Y;
+
+                byte[] tempArray = new byte[byteCount];
+                fixed (byte* arr = tempArray) {
+                    int sizePerPixel = Image.GetPixelFormatSize(curBitmap.PixelFormat) / 8;
+
+                    //fill with background color
+                    if (sizePerPixel == 4) {
+                        for (int i = 0; i < byteCount / 4; i++) {
+                            ((int*)arr)[i] = backgroundColor.ToArgb();
+                        }
+                    } else if (sizePerPixel == 1) {//indexed color
+                        for (int i = 0; i < byteCount; i++) {
+                            arr[i] = 0;
+                        }
+                    }
+
+                    for (int y = 0; y < curBitmap.Height; y++) {//keep pixels inside boundary
+                        if ((y + offset_y) < curBitmap.Height && (y + offset_y) > 0) {
+                            for (int x = 0; x < curBitmap.Width * sizePerPixel; x += sizePerPixel) {
+                                if ((x + offset_x * sizePerPixel) < curBitmap.Width * sizePerPixel && (x + offset_x * sizePerPixel) > 0) {//keep pixels inside boundary
+                                    for (int colorPos = 0; colorPos < sizePerPixel; ++colorPos) {
+                                        tempArray[x + offset_x * sizePerPixel + colorPos + (y + offset_y) * bmpData.Stride] = grayValues[x + colorPos + y * bmpData.Stride];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //copy back data
+                System.Runtime.InteropServices.Marshal.Copy(tempArray, 0, ptr, byteCount);
+                curBitmap.UnlockBits(bmpData);
+            }
         }
 
         private void CreatSHP(bool CloseWhenFinished)
@@ -1487,6 +1451,7 @@ namespace ImageShaper
                         try
                         {
                             CImageResult cac = c.CombineAndConvert(wJ.imagejobs[j].files);
+                            AdapatCanvasAdjustment(cac, CanvasOffset);
                             Bitmap img = cac.bmp;
                             if (wJ.imagejobs[j].files[0].RadarColorAverage) wJ.imagejobs[j].files[0].RadarColor = cac.RadarColor;
 
@@ -2234,12 +2199,26 @@ namespace ImageShaper
                     Console.WriteLine("SplitInterval = " + SplitInterval);
                 } else if(args[i].StartsWith("-notrim")) {
                     TrimInputName = false;
-                }
-                else if (args[i].StartsWith("-silentwhendone")) {
+                } else if (args[i].StartsWith("-canvasoff=")) {
+                    var values = argvalue.Split(',');
+                    if (values.Length > 0) {
+                        CanvasOffset.Left = Convert.ToInt32(values[0]);
+                    }
+                    if (values.Length > 1) {
+                        CanvasOffset.Right = Convert.ToInt32(values[1]);
+                    }
+                    if (values.Length > 2) {
+                        CanvasOffset.Top = Convert.ToInt32(values[2]);
+                    }
+                    if (values.Length > 3) {
+                        CanvasOffset.Bottom = Convert.ToInt32(values[3]);
+                    }
+                } else if (args[i].StartsWith("-silentwhendone")) {
                     SilentWhenDone = true;
                 }
 
             }
+
             CreatSHP(closewhenfinished);
             if (!this.IsDisposed)
                 this.ShowDialog();

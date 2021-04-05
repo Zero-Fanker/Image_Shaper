@@ -106,6 +106,7 @@ namespace ImageShaper
             {
                 CImageFile basefile = files2combine[0];
                 Bitmap convertedbaseimage = null;
+                var palette = PaletteManager.GetPalette(basefile.PaletteIndex);
                 if (!basefile.IsSHP)
                     convertedbaseimage = LoadImageWithoutFuckingDPI(basefile.FileName, PaletteManager.GetPalette(basefile.PaletteIndex), basefile.CustomBackgroundColor, basefile.UseCustomBackgroundColor, basefile.CombineTransparentPixel);
                 else
@@ -133,6 +134,11 @@ namespace ImageShaper
                 result.bmp = convertedbaseimage;
                 result.RadarColor = avgRadarColor;
                 result.bitflags = basefile.BitFlags;
+                if (palette != null) {
+                    result.BackgroundColor = palette.palette[0].Color;
+                } else {
+                    result.BackgroundColor = Color.FromArgb(0);
+                }
                 return result;
             }
             return result;// new Bitmap(1, 1);

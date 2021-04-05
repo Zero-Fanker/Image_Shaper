@@ -191,6 +191,7 @@ namespace ImageShaper
         public int frameNr;
         public string message;
         public Color RadarColor;
+        public Color BackgroundColor;
         public CImageResult(Bitmap bmp, int frameNr, SHP_TS_EncodingFormat format, SHP_TS_BitFlags bitflags, Color RadarColor, string message)
         {
             this.bmp = bmp;
