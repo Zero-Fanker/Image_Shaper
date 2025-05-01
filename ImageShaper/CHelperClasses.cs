@@ -149,17 +149,29 @@ namespace ImageShaper
         public string outputfilename;
         public bool CreateImageFile;
         public SHP_TS_EncodingFormat DefaultCompression;
-        public CImageJob(string targetpath, int row_index, string framefilename, string framefileformat, List<CImageFile> imagefiles, bool CreateFrameFile, SHP_TS_EncodingFormat DefaultCompression)
+        public CImageJob(string targetpath, 
+            int row_index, 
+            string framefilename, 
+            string framefileformat, 
+            List<CImageFile> imagefiles, 
+            bool createFrameFile, 
+            SHP_TS_EncodingFormat DefaultCompression)
         {
-            this.CreateImageFile = CreateFrameFile;
+            this.CreateImageFile = createFrameFile;
             this.frameNr = row_index;
-            if (framefilename == "*")
-                this.tmpfilename = Path.GetFileNameWithoutExtension(imagefiles[0].FileName);
-            else
-                this.tmpfilename = framefilename + row_index.ToString("00000");
             this.tmpfileformat = framefileformat;
-            if (!CreateFrameFile)
+            if (framefilename == "*")
+            { 
+                this.tmpfilename = Path.GetFileNameWithoutExtension(imagefiles[0].FileName) + row_index.ToString("00000");
+            }
+            else
+            { 
+                this.tmpfilename = framefilename + row_index.ToString("00000");
+            }
+            if (!createFrameFile)
+            { 
                 this.tmpfilename = "frame" + row_index.ToString("00000");
+            }
             this.outputfilename = Path.Combine(targetpath, tmpfilename);
             this.files = imagefiles.ToArray();
             this.DefaultCompression = DefaultCompression;

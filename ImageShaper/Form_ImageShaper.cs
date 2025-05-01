@@ -1312,7 +1312,7 @@ namespace ImageShaper
             bool PreventWobbleBug = this.checkBox_PreventWobbleBug.Checked;
             bool optimizeCanvas = this.checkBox_OptimizeCanvas.Checked;
             bool keepCentered = this.checkBox_KeepCentered.Checked;
-            bool CreateFrameFiles = this.checkBox_FrameFiles.Checked;
+            bool createFrameFiles = this.checkBox_FrameFiles.Checked;
             int max_Worker = (int)this.toolStripMenuItem_Label_NUD_NrWorker.ToolStrip_UC_Label_NUD.Value;
             SHP_TS_EncodingFormat DefaultCompression = GetDefaultCompression;
             string tmpfilename = this.textBox_CreateFiles.Text;
@@ -1397,7 +1397,7 @@ namespace ImageShaper
                     }
                 if (files.Count > 0)
                 {
-                    jobs.Add(new CImageJob(ouputfolder_Temp, frameNr, tmpfilename, tmpfileformat, files, CreateFrameFiles, DefaultCompression));
+                    jobs.Add(new CImageJob(ouputfolder_Temp, frameNr, tmpfilename, tmpfileformat, files, createFrameFiles, DefaultCompression));
                     frameNr++;
                 }
             }
@@ -1418,8 +1418,14 @@ namespace ImageShaper
             this.progressBar1.Minimum = 0;
             this.progressBar1.Maximum = this.dataGridView_Files.Rows.Count;
 
-            if (!CreateFrameFiles) this.richTextBox_Reports.SelectedText = "Creating frames" + Environment.NewLine;
-            else this.richTextBox_Reports.SelectedText = "Creating palette indexed files in folder:" + Environment.NewLine + ouputfolder_Temp + Environment.NewLine;
+            if (!createFrameFiles)
+            {
+                this.richTextBox_Reports.SelectedText = "Creating frames" + Environment.NewLine;
+            }
+            else
+            {
+                this.richTextBox_Reports.SelectedText = "Creating palette indexed files in folder:" + Environment.NewLine + ouputfolder_Temp + Environment.NewLine;
+            }
 
             //create the worker and divide the imagejobs in small parts that get assigned to each worker
             List<BackgroundWorker> bw = new List<BackgroundWorker>();
@@ -1466,8 +1472,7 @@ namespace ImageShaper
                             //the first image file sets the encoding format (previous checks make sure, that at this point is always a first file present)
                             SHP_TS_EncodingFormat format = wJ.imagejobs[j].files[0].CompressionFormat;
                             if (format == SHP_TS_EncodingFormat.Undefined) format = wJ.imagejobs[j].DefaultCompression;
-                            string report = " created";
-                            if (!wJ.imagejobs[j].CreateImageFile) report = " processed";
+                            string report = wJ.imagejobs[j].CreateImageFile ? " created" : " processed";
                             worker.ReportProgress(j, new CImageResult(img,
                                 wJ.imagejobs[j].frameNr, format,
                                 wJ.imagejobs[j].files[0].BitFlags,
@@ -1662,6 +1667,7 @@ namespace ImageShaper
                         try
                         {
                             cac = c.CombineAndConvert(job.files);
+                            AdapatCanvasAdjustment(cac, CanvasOffset);
                         }
                         catch (Exception ex)
                         {
@@ -2087,15 +2093,22 @@ namespace ImageShaper
             for (int i = 0; i < args.Length; i++)
             {
                 string argvalue = "";
-                if (args[i].Contains('=')) argvalue = args[i].Split('=')[1];
+                if (args[i].Contains('='))
+                {
+                    argvalue = args[i].Split('=')[1];
+                }
 
                 if (args[i].StartsWith("-o="))
+                { 
                     this.toolStripMenuItem_Outputfolder.ToolStrip_UC_FolderSelector.Value = argvalue;
+                    continue;
+                }
 
                 if (args[i].StartsWith("-p="))
                 {
                     Console.WriteLine("loading palette [" + argvalue + "]");
                     this.uC_Palette1.LoadPalette(argvalue);
+                    continue;
                 }
 
                 if (args[i].StartsWith("-c="))
@@ -2104,24 +2117,33 @@ namespace ImageShaper
                     switch (argvalue.ToLower())
                     {
                         case "0":
-                        case "undefined": this.comboBox_Compression.SelectedIndex = 0; break;
+                        case "undefined": this.comboBox_Compression.SelectedIndex = 0;
+                            break;
                         case "1":
-                        case "uncompressed": this.comboBox_Compression.SelectedIndex = 1; break;
+                        case "uncompressed": this.comboBox_Compression.SelectedIndex = 1;
+                            break;
                         case "2":
-                        case "rle_zero": this.comboBox_Compression.SelectedIndex = 2; break;
+                        case "rle_zero": this.comboBox_Compression.SelectedIndex = 2;
+                            break;
                         case "3":
-                        case "detect_best_size": this.comboBox_Compression.SelectedIndex = 3; break;
+                        case "detect_best_size": this.comboBox_Compression.SelectedIndex = 3;
+                            break;
                     }
+                    continue;
                 }
 
                 if (args[i].StartsWith("-i="))
                 {
                     AddFilesToDataGridSync(GetCommandFiles(argvalue), 0, -1, setbits, setCompression);
+                    continue;
                 }
 
                 //general settings that don't affect file loading order/settings
                 if (args[i].StartsWith("-z"))
+                {
                     closewhenfinished = false;
+                    continue;
+                }
 
                 if (args[i].StartsWith("-optcan="))
                 {
@@ -2129,24 +2151,31 @@ namespace ImageShaper
                     {
                         case "0":
                         case "off":
-                        case "no": this.checkBox_OptimizeCanvas.Checked = false; break;
+                        case "no": this.checkBox_OptimizeCanvas.Checked = false;
+                            break;
                         case "1":
                         case "on":
-                        case "yes": this.checkBox_OptimizeCanvas.Checked = true; break;
+                        case "yes": this.checkBox_OptimizeCanvas.Checked = true;
+                            break;
                     }
+                    continue;
                 }
 
                 if (args[i].StartsWith("-centered="))
                 {
-                    switch (argvalue)
-                    {
+                    switch (argvalue) {
                         case "0":
                         case "off":
-                        case "no": this.checkBox_KeepCentered.Checked = false; break;
+                        case "no": {
+                                this.checkBox_KeepCentered.Checked = false;
+                            } break;
                         case "1":
                         case "on":
-                        case "yes": this.checkBox_KeepCentered.Checked = true; break;
+                        case "yes": { 
+                                this.checkBox_KeepCentered.Checked = true;
+                            } break;
                     }
+                    continue;
                 }
 
                 if (args[i].StartsWith("-stopwobblebug="))
@@ -2160,9 +2189,21 @@ namespace ImageShaper
                         case "on":
                         case "yes": this.checkBox_PreventWobbleBug.Checked = true; break;
                     }
+                    continue;
                 }
 
-                if(args[i].StartsWith("-splitstart="))
+                if (args[i] == "-dump-frame")
+                {
+                    this.checkBox_FrameFiles.Checked = true;
+                    continue;
+                }
+
+                if (args[i] == "-adaptive-frame-name")
+                {
+                    this.textBox_CreateFiles.Text = "*";
+                }
+
+                if (args[i].StartsWith("-splitstart="))
                 {
                     Console.WriteLine("argvalue = " + argvalue);
                     switch (argvalue)
@@ -2175,8 +2216,10 @@ namespace ImageShaper
                             SplitStartFrame = (SplitFrame)Convert.ToInt32(argvalue);
                             break;
                     }
+                    continue;
                 }
-                else if (args[i].StartsWith("-splitend="))
+
+                if (args[i].StartsWith("-splitend="))
                 {
                     Console.WriteLine("argvalue = " + argvalue);
                     switch (argvalue)
@@ -2189,17 +2232,28 @@ namespace ImageShaper
                             break;
                     }
 
+                    continue;
                 }
-                else if (args[i].StartsWith("-splitwithshadow"))
+
+                if (args[i].StartsWith("-splitwithshadow"))
                 {
                     SplitWithShadow = true;
                 }
-                else if (args[i].StartsWith("-splitinterval=")) {
+
+                if (args[i].StartsWith("-splitinterval=")) {
                     SplitInterval = Math.Max(1, Convert.ToInt32(argvalue));
                     Console.WriteLine("SplitInterval = " + SplitInterval);
-                } else if(args[i].StartsWith("-notrim")) {
+                    continue;
+                }
+
+                if (args[i].StartsWith("-notrim"))
+                {
                     TrimInputName = false;
-                } else if (args[i].StartsWith("-canvasoff=")) {
+                    continue;
+                }
+
+                if (args[i].StartsWith("-canvasoff="))
+                {
                     var values = argvalue.Split(',');
                     if (values.Length > 0) {
                         CanvasOffset.Left = Convert.ToInt32(values[0]);
@@ -2213,8 +2267,12 @@ namespace ImageShaper
                     if (values.Length > 3) {
                         CanvasOffset.Bottom = Convert.ToInt32(values[3]);
                     }
-                } else if (args[i].StartsWith("-silentwhendone")) {
+                    continue;
+                }
+
+                if (args[i].StartsWith("-silentwhendone")) {
                     SilentWhenDone = true;
+                    continue;
                 }
 
             }
