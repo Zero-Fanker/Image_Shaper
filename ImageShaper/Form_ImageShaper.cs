@@ -1232,7 +1232,7 @@ namespace ImageShaper
         #endregion
 
         private void button_Start_Click(object sender, EventArgs e) {
-            CreatSHP(false);
+            CreatSHP(false, true);
         }
 
         private unsafe void AdapatCanvasAdjustment(CImageResult input, RectangleOffset canvasOffset) {
@@ -1251,7 +1251,9 @@ namespace ImageShaper
                 Bitmap resizedImg = new Bitmap(newWidth, newHeight, oldBmp.PixelFormat);
                 var data = resizedImg.LockBits(new Rectangle(0, 0, newWidth, newHeight), ImageLockMode.ReadWrite, resizedImg.PixelFormat);
                 //Program.CopyMemory(data.Scan0, oldData.Scan0, (uint)(oldBmp.Width * oldBmp.Height));
-                System.Runtime.InteropServices.Marshal.Copy(oldBuffer, 0, data.Scan0, byteCount); 
+                System.Runtime.InteropServices.Marshal.Copy(oldBuffer, 0, data.Scan0, byteCount);
+                resizedImg.UnlockBits(data);
+                oldBmp.UnlockBits(oldData);
                 //Graphics gfx = Graphics.FromImage(resizedImg);
                 //gfx.DrawImage(oldBmp, 0, 0);
                 input.bmp = resizedImg;
@@ -1307,7 +1309,7 @@ namespace ImageShaper
             }
         }
 
-        private void CreatSHP(bool CloseWhenFinished)
+        private void CreatSHP(bool closeWhenFinished, bool dumpConvertedSHP)
         {
             bool PreventWobbleBug = this.checkBox_PreventWobbleBug.Checked;
             bool optimizeCanvas = this.checkBox_OptimizeCanvas.Checked;
@@ -1366,8 +1368,13 @@ namespace ImageShaper
             for (int r = 0; r < this.dataGridView_Files.Rows.Count; r++)
             {
                 if (this.dataGridView_Files.Rows[r].Cells[0].Value != null)
+                { 
                     SHPFilename = ((CImageFile)this.dataGridView_Files.Rows[r].Cells[0].Value).FileName;
-                if (SHPFilename != "") break;
+                }
+                if (SHPFilename != "")
+                {
+                    break;
+                }
             }
             SHPFilename = Path.GetFileNameWithoutExtension(SHPFilename);
 
@@ -1403,8 +1410,10 @@ namespace ImageShaper
             }
             if (jobs.Count == 0)
             {
-                if (CloseWhenFinished)
+                if (closeWhenFinished)
+                { 
                     this.Close();
+                }
                 return;
             }
             if (jobs.Count > ushort.MaxValue)
@@ -1459,15 +1468,22 @@ namespace ImageShaper
                             CImageResult cac = c.CombineAndConvert(wJ.imagejobs[j].files);
                             AdapatCanvasAdjustment(cac, CanvasOffset);
                             Bitmap img = cac.bmp;
-                            if (wJ.imagejobs[j].files[0].RadarColorAverage) wJ.imagejobs[j].files[0].RadarColor = cac.RadarColor;
+                            if (wJ.imagejobs[j].files[0].RadarColorAverage)
+                            {
+                                wJ.imagejobs[j].files[0].RadarColor = cac.RadarColor;
+                            }
 
                             if (wJ.imagejobs[j].CreateImageFile)
                             {
                                 ImageFormat imfo = getImageFormat(wJ.imagejobs[j].tmpfileformat);
                                 if ((imfo != null) && (wJ.imagejobs[j].tmpfileformat != "SHP(TS)"))
+                                {
                                     img.Save(wJ.imagejobs[j].outputfilename + "." + wJ.imagejobs[j].tmpfileformat, imfo);
+                                }
                                 else
+                                {
                                     CSHaPer.CreateSHP(wJ.imagejobs[j].outputfilename + ".SHP", new CImageResult[] { cac }, PreventWobbleBug, optimizeCanvas, keepCentered);
+                                }
                             }
                             //the first image file sets the encoding format (previous checks make sure, that at this point is always a first file present)
                             SHP_TS_EncodingFormat format = wJ.imagejobs[j].files[0].CompressionFormat;
@@ -1516,50 +1532,55 @@ namespace ImageShaper
                         finished_Worker++;
                         if (finished_Worker >= max_Worker)
                         {
-                            this.progressBar1.Value = 0;
-                            this.richTextBox_Reports.SelectedText = "___ creating SHP ___" + Environment.NewLine;
-
-                            //lets take here the convertedframes and create the SHP
-                            try
+                            if (dumpConvertedSHP)
                             {
-                                int splitFramesCount = convertedframes.Length / SplitResultCount;
-                                int maxdigits = (int)Math.Floor(Math.Log10(SplitResultCount) + 1);
+                                this.progressBar1.Value = 0;
+                                this.richTextBox_Reports.SelectedText = "___ creating SHP ___" + Environment.NewLine;
 
-                                if (SplitResultCount <= convertedframes.Length)
-                                    for (int r = 0; r < SplitResultCount; r++)
-                                    {
-                                        string SHPFilenameResult = SHPFilename + ".shp";
-                                        if (SplitResultCount > 1)
+                                //lets take here the convertedframes and create the SHP
+                                try
+                                {
+                                    int splitFramesCount = convertedframes.Length / SplitResultCount;
+                                    int maxdigits = (int)Math.Floor(Math.Log10(SplitResultCount) + 1);
+
+                                    if (SplitResultCount <= convertedframes.Length)
+                                        for (int r = 0; r < SplitResultCount; r++)
                                         {
-                                            SHPFilenameResult = SHPFilename + "_" + r.ToString().PadLeft(maxdigits, '0') + ".shp";
+                                            string shpFilenameResult = SHPFilename + ".shp";
+                                            if (SplitResultCount > 1)
+                                            {
+                                                shpFilenameResult = SHPFilename + "_" + r.ToString().PadLeft(maxdigits, '0') + ".shp";
+                                            }
+
+                                            CImageResult[] SplitFrames = new CImageResult[splitFramesCount];
+                                            Array.Copy(convertedframes, r * splitFramesCount, SplitFrames, 0, splitFramesCount);
+
+                                            CSHaPer.CreateSHP(Path.Combine(outputfolder, shpFilenameResult), SplitFrames, PreventWobbleBug, optimizeCanvas, keepCentered);
+                                            this.richTextBox_Reports.SelectedText = "SHP File [" + shpFilenameResult + "] created in output folder:" + Environment.NewLine;
+                                            this.richTextBox_Reports.SelectedText = "\t" + outputfolder + Environment.NewLine;
+                                            if (RunAsCommand)
+                                            {
+                                                Console.WriteLine("SHP File [" + shpFilenameResult + "] created in output folder:" + outputfolder);
+                                            }
+                                            PlaySound();
                                         }
-
-                                        CImageResult[] SplitFrames = new CImageResult[splitFramesCount];
-                                        Array.Copy(convertedframes, r * splitFramesCount, SplitFrames, 0, splitFramesCount);
-
-                                        CSHaPer.CreateSHP(Path.Combine(outputfolder, SHPFilenameResult), SplitFrames, PreventWobbleBug, optimizeCanvas, keepCentered);
-                                        this.richTextBox_Reports.SelectedText = "SHP File [" + SHPFilenameResult + "] created in output folder:" + Environment.NewLine;
-                                        this.richTextBox_Reports.SelectedText = "\t" + outputfolder + Environment.NewLine;
-                                        if (RunAsCommand)
-                                            Console.WriteLine("SHP File [" + SHPFilenameResult + "] created in output folder:" + outputfolder);
-                                        PlaySound();
+                                    else
+                                    {
+                                        this.richTextBox_Reports.SelectionColor = Color.Red;
+                                        this.richTextBox_Reports.SelectedText = "Can't split " + convertedframes.Length.ToString() + " frames into " + SplitResultCount.ToString() + " files." + Environment.NewLine;
                                     }
-                                else
+                                    //CSHaPer.CreateSHP(Path.Combine(programpath, SHPFilename), convertedframes, PreventWobbleBug, optimizeCanvas, keepCentered);
+                                    //this.richTextBox_Reports.SelectedText = "SHP File [" + SHPFilename + "] created" + Environment.NewLine;
+                                }
+                                catch (Exception ex)
                                 {
                                     this.richTextBox_Reports.SelectionColor = Color.Red;
-                                    this.richTextBox_Reports.SelectedText = "Can't split " + convertedframes.Length.ToString() + " frames into " + SplitResultCount.ToString() + " files." + Environment.NewLine;
+                                    this.richTextBox_Reports.SelectedText = "CSHaPer.CreateSHP Error:" + ex.Message + Environment.NewLine;
+                                    if (RunAsCommand)
+                                        Console.WriteLine("CSHaPer.CreateSHP Error:" + ex.Message);
                                 }
-                                //CSHaPer.CreateSHP(Path.Combine(programpath, SHPFilename), convertedframes, PreventWobbleBug, optimizeCanvas, keepCentered);
-                                //this.richTextBox_Reports.SelectedText = "SHP File [" + SHPFilename + "] created" + Environment.NewLine;
                             }
-                            catch (Exception ex)
-                            {
-                                this.richTextBox_Reports.SelectionColor = Color.Red;
-                                this.richTextBox_Reports.SelectedText = "CSHaPer.CreateSHP Error:" + ex.Message + Environment.NewLine;
-                                if (RunAsCommand)
-                                    Console.WriteLine("CSHaPer.CreateSHP Error:" + ex.Message);
-                            }
-
+                            
                             duration.Stop();
                             this.richTextBox_Reports.SelectedText = "Duration: " + duration.Elapsed.TotalSeconds.ToString("0.0sec") + Environment.NewLine;
                             try
@@ -1577,9 +1598,9 @@ namespace ImageShaper
                             this.button_Start.Enabled = true;
                             this.dataGridView_Files.Focus();
 
-                            if (CloseWhenFinished)
+                            if (closeWhenFinished)
                             {
-                                System.Threading.Thread.Sleep(1000);
+                                //System.Threading.Thread.Sleep(1000);
                                 this.Close();
                             }
                         }
@@ -2090,6 +2111,7 @@ namespace ImageShaper
             bool setbits = false;
             bool setCompression = false;
             bool closewhenfinished = true;
+            bool dumpConvertedSHP = true;
             for (int i = 0; i < args.Length; i++)
             {
                 string argvalue = "";
@@ -2203,6 +2225,11 @@ namespace ImageShaper
                     this.textBox_CreateFiles.Text = "*";
                 }
 
+                if (args[i] == "-no-converted-shp")
+                {
+                    dumpConvertedSHP = false;
+                }
+
                 if (args[i].StartsWith("-splitstart="))
                 {
                     Console.WriteLine("argvalue = " + argvalue);
@@ -2277,7 +2304,7 @@ namespace ImageShaper
 
             }
 
-            CreatSHP(closewhenfinished);
+            CreatSHP(closewhenfinished, dumpConvertedSHP);
             if (!this.IsDisposed)
                 this.ShowDialog();
         }
