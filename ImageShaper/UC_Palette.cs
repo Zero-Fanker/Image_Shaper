@@ -26,11 +26,7 @@ namespace ImageShaper
         // The method which fires the Event
         protected void OnPaletteChanged(object sender, EventArgs e)
         {
-            var target = PaletteChanged;
-            if (target != null)
-            {
-                target(this, new EventArgs());
-            }
+            PaletteChanged?.Invoke(this, new EventArgs());
         }
         #endregion
 

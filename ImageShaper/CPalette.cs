@@ -77,7 +77,10 @@ namespace ImageShaper
         /// </summary>
         public static CPalette GetPalette(int index)
         {
-            if ((index != -1) && (index < Palettes.Length)) return Palettes[index];
+            if ((index != -1) && (index < Palettes.Length))
+            {
+                return Palettes[index];
+            }
             return null;
         }
 
