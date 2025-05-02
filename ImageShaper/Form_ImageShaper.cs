@@ -2112,6 +2112,9 @@ namespace ImageShaper
             bool setCompression = false;
             bool closewhenfinished = true;
             bool dumpConvertedSHP = true;
+            string palettePathSpecified = "";
+            string inputFiles = "";
+
             for (int i = 0; i < args.Length; i++)
             {
                 string argvalue = "";
@@ -2121,15 +2124,14 @@ namespace ImageShaper
                 }
 
                 if (args[i].StartsWith("-o="))
-                { 
+                {
                     this.toolStripMenuItem_Outputfolder.ToolStrip_UC_FolderSelector.Value = argvalue;
                     continue;
                 }
 
                 if (args[i].StartsWith("-p="))
                 {
-                    Console.WriteLine("loading palette [" + argvalue + "]");
-                    this.uC_Palette1.LoadPalette(argvalue);
+                    palettePathSpecified = argvalue;
                     continue;
                 }
 
@@ -2156,7 +2158,7 @@ namespace ImageShaper
 
                 if (args[i].StartsWith("-i="))
                 {
-                    AddFilesToDataGridSync(GetCommandFiles(argvalue), 0, -1, setbits, setCompression);
+                    inputFiles = argvalue;
                     continue;
                 }
 
@@ -2302,6 +2304,17 @@ namespace ImageShaper
                     continue;
                 }
 
+            }
+
+            // palette must be set first
+            if (!string.IsNullOrEmpty(palettePathSpecified))
+            {
+                Console.WriteLine("loading palette [" + palettePathSpecified + "]");
+                uC_Palette1.LoadPalette(palettePathSpecified);
+            }
+            if (!string.IsNullOrEmpty(inputFiles))
+            {
+                AddFilesToDataGridSync(GetCommandFiles(inputFiles), 0, -1, setbits, setCompression);
             }
 
             CreatSHP(closewhenfinished, dumpConvertedSHP);
