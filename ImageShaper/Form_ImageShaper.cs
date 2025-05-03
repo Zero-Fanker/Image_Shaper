@@ -2123,6 +2123,7 @@ namespace ImageShaper
             bool dumpConvertedSHP = true;
             string palettePathSpecified = "";
             string inputFiles = "";
+            string customBGColor = "";
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -2225,6 +2226,12 @@ namespace ImageShaper
                     continue;
                 }
 
+                if (args[i].StartsWith("-bg-color="))
+                {
+                    customBGColor = argvalue;
+                    continue;
+                }
+
                 if (args[i] == "-dump-frame")
                 {
                     this.checkBox_FrameFiles.Checked = true;
@@ -2315,6 +2322,15 @@ namespace ImageShaper
                     continue;
                 }
 
+            }
+
+            if (!string.IsNullOrEmpty(customBGColor))
+            {
+                var color = Cinimanager.GetSystemDrawingColorFromHexString(customBGColor);
+                checkBox_UseCustomBackgroundColor.Checked = true;
+                button_CustomBackgroundColor.Text = customBGColor;
+                this.button_CustomBackgroundColor.Tag = color;
+                this.button_CustomBackgroundColor.Text = customBGColor;
             }
 
             // palette must be set first
