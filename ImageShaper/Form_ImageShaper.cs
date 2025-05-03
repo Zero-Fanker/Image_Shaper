@@ -1116,8 +1116,17 @@ namespace ImageShaper
                         row = (DataGridViewRow)this.dataGridView_Files.RowTemplate.Clone();
                         object[] values = new object[3];
                         for (int i = 0; i < values.Length; i++)
-                            if (i == columnindex) values[i] = cif;
-                            else values[i] = null;
+                        {
+
+                            if (i == columnindex)
+                            {
+                                values[i] = cif;
+                            }
+                            else
+                            {
+                                values[i] = null;
+                            }
+                        }
 
                         row.CreateCells(this.dataGridView_Files, values);
                         this.dataGridView_Files.Rows.Add(row);
@@ -2225,11 +2234,13 @@ namespace ImageShaper
                 if (args[i] == "-adaptive-frame-name")
                 {
                     this.textBox_CreateFiles.Text = "*";
+                    continue;
                 }
 
                 if (args[i] == "-no-converted-shp")
                 {
                     dumpConvertedSHP = false;
+                    continue;
                 }
 
                 if (args[i].StartsWith("-splitstart="))
